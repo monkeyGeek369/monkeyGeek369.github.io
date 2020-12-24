@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8">
+<title>分类: java基础 - monkeyGeek</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+
+
+    <meta name="description" content="简介我们在java编码的过程中不可避免的会使用java中提供的集合对象,例如List,ArrayList等等,那么在使用集合的过程中有很大的几率会用到排序.回想一下在学习c语言的时候排序是如何实现的?">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java中的比较器Comparable与Comparator">
+<meta property="og:url" content="https://monkeygeek369.github.io/2020/4/7/compare/index.html">
+<meta property="og:site_name" content="monkeyGeek">
+<meta property="og:description" content="简介我们在java编码的过程中不可避免的会使用java中提供的集合对象,例如List,ArrayList等等,那么在使用集合的过程中有很大的几率会用到排序.回想一下在学习c语言的时候排序是如何实现的?">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://monkeygeek369.github.io/images/og_image.png">
+<meta property="article:published_time" content="2020-04-07T13:48:37.000Z">
+<meta property="article:modified_time" content="2020-04-07T13:48:37.000Z">
+<meta property="article:author" content="monkeyGeek">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="java比较器">
+<meta property="article:tag" content="排序">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://monkeygeek369.github.io/images/og_image.png">
+
+
+
+
+
+
+
+<link rel="icon" href="/images/monkeygeek.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/monkeygeek.svg" alt="java中的比较器Comparable与Comparator" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">首页</a>
+                
+                <a class="navbar-item"
+                href="/archives">时光飞逝</a>
+                
+                <a class="navbar-item"
+                href="/categories">技术乐园</a>
+                
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                
+                <a class="navbar-item"
+                href="/categories/experienceShare">经验分享</a>
+                
+                <a class="navbar-item"
+                href="/categories/aboutme">关于我</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Download on GitHub" href="https://github.com/monkeyGeek369">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-04-07T13:48:37.000Z">2020-04-07</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/java%E5%9F%BA%E7%A1%80/">java基础</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    19 分钟 读完 (大约 2879 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                java中的比较器Comparable与Comparator
+            
+        </h1>
+        <div class="content">
+            <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>我们在java编码的过程中不可避免的会使用java中提供的集合对象,例如List,ArrayList等等,那么在使用集合的过程中有很大的几率会用到排序.回想一下在学习c语言的时候排序是如何实现的?<a id="more"></a>没错,就是通过手写各种基础的排序算法实现排序(当然现在也有各种c语言的基础包可用),例如选择\冒泡\插入\希尔\二分法等等.在Java中我们当然也可以自己写排序算法实现排序,但是JDK已经提供一些基础的基于集合的排序接口供我们使用,因此无需特意自写算法.本文将介绍两种排序的实现方式Comparable与Comparator.</p>
+<br>
+
+<h1 id="Comparable"><a href="#Comparable" class="headerlink" title="Comparable"></a>Comparable</h1><p>首先我们举一个简单的例子，如下：</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Test</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">integerSort</span><span class="hljs-params">()</span></span>&#123;</span><br><span class="line">        List&lt;Integer&gt; integers = Lists.newArrayList();</span><br><span class="line">        integers.add(<span class="hljs-number">5</span>);</span><br><span class="line">        integers.add(<span class="hljs-number">6</span>);</span><br><span class="line">        integers.add(<span class="hljs-number">1</span>);</span><br><span class="line">        integers.add(<span class="hljs-number">3</span>);</span><br><span class="line">        integers.add(<span class="hljs-number">4</span>);</span><br><span class="line">        integers.add(<span class="hljs-number">9</span>);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序前</span></span><br><span class="line">        printUtil.printList(integers);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序--通过集合工具类Arrays</span></span><br><span class="line">        Collections.sort(integers);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序后</span></span><br><span class="line">        printUtil.printList(integers);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>执行结果如下：</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">9</span>,</span><br><span class="line"><span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">9</span>,</span><br></pre></td></tr></table></figure>
+<p>看到这里大家或许会有疑问？我们什么都没有做为什么代码自动实现了排序？</p>
+<p>那是因为我们的包装类型Integer内部已经继承并重写了comparable</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Integer</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Number</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Comparable</span>&lt;<span class="hljs-title">Integer</span>&gt; </span>&#123;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * Compares two &#123;<span class="hljs-doctag">@code</span> Integer&#125; objects numerically.</span></span><br><span class="line"><span class="hljs-comment">     *</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@param</span>   anotherInteger   the &#123;<span class="hljs-doctag">@code</span> Integer&#125; to be compared.</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@return</span>  the value &#123;<span class="hljs-doctag">@code</span> 0&#125; if this &#123;<span class="hljs-doctag">@code</span> Integer&#125; is</span></span><br><span class="line"><span class="hljs-comment">     *          equal to the argument &#123;<span class="hljs-doctag">@code</span> Integer&#125;; a value less than</span></span><br><span class="line"><span class="hljs-comment">     *          &#123;<span class="hljs-doctag">@code</span> 0&#125; if this &#123;<span class="hljs-doctag">@code</span> Integer&#125; is numerically less</span></span><br><span class="line"><span class="hljs-comment">     *          than the argument &#123;<span class="hljs-doctag">@code</span> Integer&#125;; and a value greater</span></span><br><span class="line"><span class="hljs-comment">     *          than &#123;<span class="hljs-doctag">@code</span> 0&#125; if this &#123;<span class="hljs-doctag">@code</span> Integer&#125; is numerically</span></span><br><span class="line"><span class="hljs-comment">     *           greater than the argument &#123;<span class="hljs-doctag">@code</span> Integer&#125; (signed</span></span><br><span class="line"><span class="hljs-comment">     *           comparison).</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@since</span>   1.2</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">compareTo</span><span class="hljs-params">(Integer anotherInteger)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> compare(<span class="hljs-keyword">this</span>.value, anotherInteger.value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * Compares two &#123;<span class="hljs-doctag">@code</span> int&#125; values numerically.</span></span><br><span class="line"><span class="hljs-comment">     * The value returned is identical to what would be returned by:</span></span><br><span class="line"><span class="hljs-comment">     * &lt;pre&gt;</span></span><br><span class="line"><span class="hljs-comment">     *    Integer.valueOf(x).compareTo(Integer.valueOf(y))</span></span><br><span class="line"><span class="hljs-comment">     * &lt;/pre&gt;</span></span><br><span class="line"><span class="hljs-comment">     *</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@param</span>  x the first &#123;<span class="hljs-doctag">@code</span> int&#125; to compare</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@param</span>  y the second &#123;<span class="hljs-doctag">@code</span> int&#125; to compare</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> the value &#123;<span class="hljs-doctag">@code</span> 0&#125; if &#123;<span class="hljs-doctag">@code</span> x == y&#125;;</span></span><br><span class="line"><span class="hljs-comment">     *         a value less than &#123;<span class="hljs-doctag">@code</span> 0&#125; if &#123;<span class="hljs-doctag">@code</span> x &lt; y&#125;; and</span></span><br><span class="line"><span class="hljs-comment">     *         a value greater than &#123;<span class="hljs-doctag">@code</span> 0&#125; if &#123;<span class="hljs-doctag">@code</span> x &gt; y&#125;</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@since</span> 1.7</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">compare</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> (x &lt; y) ? -<span class="hljs-number">1</span> : ((x == y) ? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们再来举例一个稍微复杂的例子：</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">student</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Comparable</span>&lt;<span class="hljs-title">student</span>&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">int</span> age;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">int</span> grade;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">//重写默认比较器---升序</span></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">compareTo</span><span class="hljs-params">(student o)</span></span>&#123;</span><br><span class="line">        <span class="hljs-comment">// 入参o:可以理解为排序队列中的前一个对象,即被比较对象</span></span><br><span class="line">        <span class="hljs-comment">// this:理解为排序队列的后一个对象,即比较对象</span></span><br><span class="line">        <span class="hljs-keyword">if</span>(o.getAge() &gt; <span class="hljs-keyword">this</span>.getAge())&#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;</span><br><span class="line">        &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(o.getAge() &lt; <span class="hljs-keyword">this</span>.getAge())&#123;</span><br><span class="line">            <span class="hljs-comment">//解读:如果前一个对象小于后一个对象,那么符合我们的目标排序规则,则返回1</span></span><br><span class="line">            <span class="hljs-comment">//因此我们可以想象一下,前小后大的序列是升序序列,以此我们可以理解降序序列</span></span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</span><br><span class="line">        &#125;<span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Test</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">studentSortByAge</span><span class="hljs-params">()</span></span>&#123;</span><br><span class="line">        List&lt;student&gt; students = Lists.newArrayList();</span><br><span class="line"></span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">10</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">30</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">50</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">20</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">40</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">60</span>).build());</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序前</span></span><br><span class="line">        printUtil.printList(students);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序--通过集合工具类Collections(底层是利用二分法实现的排序)</span></span><br><span class="line">        Collections.sort(students);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序--通过stream</span></span><br><span class="line">        <span class="hljs-comment">//students = students.stream().sorted().collect(Collectors.toList());</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序后</span></span><br><span class="line">        printUtil.printList(students);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">排序前</span><br><span class="line">student(age=<span class="hljs-number">10</span>, grade=<span class="hljs-number">0</span>),student(age=<span class="hljs-number">30</span>, grade=<span class="hljs-number">0</span>),student(age=<span class="hljs-number">50</span>, grade=<span class="hljs-number">0</span>),student(age=<span class="hljs-number">20</span>, grade=<span class="hljs-number">0</span>),student(age=<span class="hljs-number">40</span>, grade=<span class="hljs-number">0</span>),student(age=<span class="hljs-number">60</span>, grade=<span class="hljs-number">0</span>)</span><br><span class="line">排序后</span><br><span class="line">student(age=<span class="hljs-number">10</span>, grade=<span class="hljs-number">0</span>),student(age=<span class="hljs-number">20</span>, grade=<span class="hljs-number">0</span>),student(age=<span class="hljs-number">30</span>, grade=<span class="hljs-number">0</span>),student(age=<span class="hljs-number">40</span>, grade=<span class="hljs-number">0</span>),student(age=<span class="hljs-number">50</span>, grade=<span class="hljs-number">0</span>),student(age=<span class="hljs-number">60</span>, grade=<span class="hljs-number">0</span>)</span><br></pre></td></tr></table></figure>
+<p>针对这种复杂的自定义模型排序我们需要模型自己继承和重写compareTo方法，很多人第一次接触该方法或许会感到疑惑，返回值只有三种（1、-1、0）分别代表什么含义？为什么这种纯数字的返回值就可以实现排序呢？</p>
+<p><em><u>首先要解答的是为什么返回1、-1、0就可以实现排序？</u></em></p>
+<p>答：comparable接口本质上是为类提供的比较接口，可以为类附加比较功能，比较的结果要么相等要么存在大小关系。借助比较结果，第三方就可以实现排序功能，例如Collections.sort(）就是利用二分法实现的排序，stream().sorted()利用的流处理进行排序，无论是哪一种排序归根揭底必须借助comparable接口提供的比较功能。</p>
+<p><em><u>其次我们要理解1、-1、0分别代表什么含义？</u></em></p>
+<p>上文代码注释中已经有比较详细的解答，大家可以思考和领悟一下。这里做一下简单的叙述：简单来说无论我们希望倒叙排序还是正序排序只需要调整好o.getAge()与this.getAge()的大小关系即可。想象一下有一列数组，o表示数组中的前一位，this代表数组中的后一位，如果我们希望升序排序，只需要设定o.getAge()&lt;this.getAge()时返回1即可，同样若需要降序排序则只需要设定o.getAge()&gt;this.getAge()时返回1即可。说到这里大家应该明白数字的含义了，本质上就是比较结果的标记。</p>
+<p><em><u>总结</u></em></p>
+<p>我们现在来总结一下Comparable的作用和用法，其作为接口为类提供了内部比较功能，使继承了该接口的类不用去依赖外部的比较器就可以实现同类对象的比较。由于实现了类的比较那么我们可以轻而易举的实现类的排序。</p>
+<br>
+
+<h1 id="Comparator"><a href="#Comparator" class="headerlink" title="Comparator"></a>Comparator</h1><p>老样子,想要讲解透彻用法还是要代码举例,我们先把必要的比较器对象创建好,具体如下:</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="hljs-comment">//创建测试数组</span></span><br><span class="line"><span class="hljs-keyword">private</span> List&lt;student&gt; students = Lists.newArrayList();</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//创建内部比较器对象--降序</span></span><br><span class="line">Comparator&lt;student&gt; studentComparator_desc = <span class="hljs-keyword">new</span> Comparator&lt;student&gt;() &#123;</span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">compare</span><span class="hljs-params">(student o1, student o2)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-comment">// 入参o1:可以理解为排序队列中的后一个对象,即比较对象</span></span><br><span class="line">        <span class="hljs-comment">// 入参o2:理解为排序队列的前一个对象,即被比较对象</span></span><br><span class="line">        <span class="hljs-keyword">if</span> (o1.getAge() &gt; o2.getAge()) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (o1.getAge() &lt; o2.getAge()) &#123;</span><br><span class="line">            <span class="hljs-comment">//解读:如果后一个对象小于前一个对象,那么符合我们的目标排序规则,则返回1</span></span><br><span class="line">            <span class="hljs-comment">//因此我们可以想象一下,前大后小的序列是降序序列,以此我们可以理解升序序列</span></span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//创建内部比较器对象--升序</span></span><br><span class="line">Comparator&lt;student&gt; studentComparator_asc = <span class="hljs-keyword">new</span> Comparator&lt;student&gt;() &#123;</span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">compare</span><span class="hljs-params">(student o1, student o2)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-comment">// 入参o1:可以理解为排序队列中的后一个对象,即比较对象</span></span><br><span class="line">        <span class="hljs-comment">// 入参o2:理解为排序队列的前一个对象,即被比较对象</span></span><br><span class="line">        <span class="hljs-keyword">if</span> (o1.getAge() &gt; o2.getAge()) &#123;</span><br><span class="line">            <span class="hljs-comment">//解读:如果后一个对象大于前一个对象,那么符合我们的目标排序规则,则返回1</span></span><br><span class="line">            <span class="hljs-comment">//因此我们可以想象一下,前小后大的序列是升序序列,以此我们可以理解降序序列</span></span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (o1.getAge() &lt; o2.getAge()) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//创建内部比较器对象--升序</span></span><br><span class="line">Comparator&lt;student&gt; studentComparator_grade_asc = <span class="hljs-keyword">new</span> Comparator&lt;student&gt;() &#123;</span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">compare</span><span class="hljs-params">(student o1, student o2)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-comment">// 入参o1:可以理解为排序队列中的后一个对象,即比较对象</span></span><br><span class="line">        <span class="hljs-comment">// 入参o2:理解为排序队列的前一个对象,即被比较对象</span></span><br><span class="line">        <span class="hljs-keyword">if</span> (o1.getGrade() &gt; o2.getGrade()) &#123;</span><br><span class="line">            <span class="hljs-comment">//解读:如果后一个对象大于前一个对象,那么符合我们的目标排序规则,则返回1</span></span><br><span class="line">            <span class="hljs-comment">//因此我们可以想象一下,前小后大的序列是升序序列,以此我们可以理解降序序列</span></span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (o1.getGrade() &lt; o2.getGrade()) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"><span class="hljs-comment">//创建内部比较器对象--降序</span></span><br><span class="line">Comparator&lt;Integer&gt; studentComparator_grade_desc = <span class="hljs-keyword">new</span> Comparator&lt;Integer&gt;() &#123;</span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">compare</span><span class="hljs-params">(Integer o1, Integer o2)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-comment">// 入参o1:可以理解为排序队列中的后一个对象,即比较对象</span></span><br><span class="line">        <span class="hljs-comment">// 入参o2:理解为排序队列的前一个对象,即被比较对象</span></span><br><span class="line">        <span class="hljs-keyword">if</span> (o1 &lt; o2) &#123;</span><br><span class="line">            <span class="hljs-comment">//解读:如果后一个对象大于前一个对象,那么符合我们的目标排序规则,则返回1</span></span><br><span class="line">            <span class="hljs-comment">//因此我们可以想象一下,前小后大的序列是升序序列,以此我们可以理解降序序列</span></span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (o1 &gt; o2) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>接下来我们编写测试代码一窥究竟,先从简单比较方式开始,具体如下:</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Test</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">publicSortMethod</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-comment">//初始化测试数组</span></span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">10</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">30</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">50</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">10</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">20</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">40</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">60</span>).build());</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序前</span></span><br><span class="line">        printUtil.printList(students);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序--通过集合工具类Collections(既是student类已经默认实现comprartable比较器接口,并实现升序,这里也会按照降序比较器排序)</span></span><br><span class="line">        <span class="hljs-comment">//Collections.sort(students,studentComparator);</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序--通过集合工具类Arrays</span></span><br><span class="line">        <span class="hljs-comment">//Arrays.sort();</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序--通过stream(既是student类已经默认实现comprartable比较器接口,并实现升序,这里也会按照降序比较器排序)</span></span><br><span class="line">        students = students.stream().sorted(studentComparator_desc).collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序--通过stream(当前比较器的反向顺序)</span></span><br><span class="line">        <span class="hljs-comment">//students = students.stream().sorted(studentComparator_desc.reversed()).collect(Collectors.toList());</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序和排重--通过stream(因为比较器中已经定义两对象相等的情况即return 0,因此可以直接直用distinct())</span></span><br><span class="line">        <span class="hljs-comment">//students = students.stream().sorted(studentComparator_desc).distinct().collect(Collectors.toList());</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序多比较器--通过stream(这里只是简单举例升序,降序,实际业务中应该是根据不同属性进行不同排序)</span></span><br><span class="line">        <span class="hljs-comment">//students = students.stream().sorted(studentComparator_desc).sorted(studentComparator_asc).collect(Collectors.toList());</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序后</span></span><br><span class="line">        printUtil.printList(students);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>Comparator的高级用法如下:</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Test</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">otherSortMethod</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-comment">//初始化测试数组</span></span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">10</span>).grade(<span class="hljs-number">200</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">30</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">50</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">10</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">20</span>).grade(<span class="hljs-number">500</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">40</span>).build());</span><br><span class="line">        students.add(student.builder().age(<span class="hljs-number">60</span>).build());</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序前</span></span><br><span class="line">        printUtil.printList(students);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//1.thenComparing用法--针对相等情况下使用另一种比较器(年龄相等按照分数升序排序)</span></span><br><span class="line">        <span class="hljs-comment">//students = students.stream().sorted(studentComparator_desc.thenComparing(studentComparator_grade_asc)).collect(Collectors.toList());</span></span><br><span class="line">        <span class="hljs-comment">//直接利用grade排序</span></span><br><span class="line">        <span class="hljs-comment">//students.sort(studentComparator_desc.thenComparing(e-&gt;e.getGrade()));</span></span><br><span class="line">        <span class="hljs-comment">//利用grade指定比较器排序,注意指定的比较器不在是student对象</span></span><br><span class="line">        <span class="hljs-comment">//students.sort(studentComparator_desc.thenComparing(e -&gt; e.getGrade(), studentComparator_grade_desc));</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//2.thenComparingInt实现对int对象的比较,入参为函数表达式</span></span><br><span class="line">        <span class="hljs-comment">//students.sort(studentComparator_desc.thenComparingInt(e -&gt; e.getGrade()));</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//3.reversed用法--反向比较器</span></span><br><span class="line">        <span class="hljs-comment">//students.sort(studentComparator_desc.reversed());</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//4.naturalOrder用法-按照自然顺序排序(本例中按照age升序排序)</span></span><br><span class="line">        <span class="hljs-comment">//students.sort(Comparator.naturalOrder());</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//5.reverseOrder用法-按照反自然顺序排序(本例中按照age降序排序)</span></span><br><span class="line">        <span class="hljs-comment">//students.sort(Comparator.reverseOrder());</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//6.nullsFirst与nullsLast用法-解决如果排序的字段为null的情况下这条记录怎么排序的问题。nullsFirst是说将null记录排在最前面，而nullsLast是说将null记录排序在最后面。</span></span><br><span class="line">        <span class="hljs-comment">//students.sort(Comparator.nullsLast(studentComparator_desc));</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//7.comparing用法-直接指定用于定义比较规则的比较器对象或者函数</span></span><br><span class="line">        <span class="hljs-comment">//students.sort(Comparator.comparing(e -&gt; e.getAge()));</span></span><br><span class="line">        <span class="hljs-comment">//students.sort(Comparator.comparing(e -&gt; e.getGrade(), studentComparator_grade_desc));</span></span><br><span class="line">        students.sort(Comparator.comparingInt(e -&gt; e.getAge()));</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//排序后</span></span><br><span class="line">        printUtil.printList(students);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+<p><em><u>总结</u></em></p>
+<p>以上两段测试代码已经将Comparator讲解的比较透彻,总的来说Comparator是用来定义比较器对象的,适合原本不支持比较的类对象实现比较功能.对比较器(1,0,-1)的详细解说可参考[1]</p>
+<br>
+
+<p>参考:</p>
+<p>[1]<a target="_blank" rel="noopener" href="https://www.cnblogs.com/maozp/p/11153403.html">https://www.cnblogs.com/maozp/p/11153403.html</a></p>
+<br>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?2f798e6b269c8a40f12bef25d7f1876d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<div style="height:260px; background-color:rgb(238,240,244); padding:10px;border-radius:10px;">
+    <p style="color:#f36c21;font:bold 16px/20px 'kaiTi';">
+      版权声明：本文为博主原创文章，欢迎转载，转载请注明作者、原文超链接，感谢各位看官!!!
+    </p>
+    <p>
+      <span style="font:bold 16px/20px 'kaiTi';">本文出自：</span><a href="https://monkeyGeek369.github.io">monkeyGeek</a> 
+    </p>
+    <p>
+      <span style="font:bold 16px/20px 'kaiTi';">座右铭：</span><span>生于忧患，死于安乐</span> 
+    </p>
+    <p>
+      <span style="font:16px/20px 'kaiTi';">欢迎志同道合的朋友一起交流、探讨！</span> 
+    </p>
+    <img style="height:auto; width:auto;flot:left;" src="../../../../image/monkey64.png"><span style="font:16px/20px 'kaiTi';flot:left;">   monkeyGeek</span>
+
+
+</div>
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link-link" href="/tags/java/" rel="tag">java</a>, <a class="has-link-grey -link-link" href="/tags/java%E6%AF%94%E8%BE%83%E5%99%A8/" rel="tag">java比较器</a>, <a class="has-link-grey -link-link" href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag">排序</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        <div class="social-share"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css">
+<script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="/images/alipay.jpg" alt="支付宝"></div>
+</a>
+
+                
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="/images/wechat.jpg" alt="微信"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/4/8/common/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">RPA编程常用技巧</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/4/7/list_sort/">
+                <span class="level-item">java中对List的排序</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: 'ddd4811074fe59faa56c',
+        clientSecret: 'fb825479f2fcc898b38e240612a6c9eb45ff15d0',
+        id: 'de323c10b2874e576ee2fb208b2591fd',
+        repo: 'monkeyGeek369.github.io',
+        owner: 'monkeyGeek369',
+        admin: "monkeyGeek369",
+        createIssueManually: false,
+        distractionFreeMode: false
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    
+                        <img class="image is-128x128 has-mb-6" src="/images/monkeygeek.png" alt="monkeyGeek">
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        monkeyGeek
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        生于忧患，死于安乐
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>中国 上海</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        80
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        18
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        40
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/monkeyGeek369" target="_blank">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Github" href="https://github.com/monkeyGeek369">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Facebook" href="/">
+                
+                <i class="fab fa-facebook"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Twitter" href="/">
+                
+                <i class="fab fa-twitter"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Dribbble" href="/">
+                
+                <i class="fab fa-dribbble"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="RSS" href="/">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/UiPath/">
+            <span class="level-start">
+                <span class="level-item">UiPath</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/aboutme/">
+            <span class="level-start">
+                <span class="level-item">aboutme</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/activiti/">
+            <span class="level-start">
+                <span class="level-item">activiti</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">8</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/experienceShare/">
+            <span class="level-start">
+                <span class="level-item">experienceShare</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/git/">
+            <span class="level-start">
+                <span class="level-item">git</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/hexo/">
+            <span class="level-start">
+                <span class="level-item">hexo</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">10</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/java%E5%9F%BA%E7%A1%80/">
+            <span class="level-start">
+                <span class="level-item">java基础</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/php%E8%AF%AD%E8%A8%80/">
+            <span class="level-start">
+                <span class="level-item">php语言</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84/">
+            <span class="level-start">
+                <span class="level-item">分布式架构</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E6%88%90%E9%95%BF/">
+            <span class="level-start">
+                <span class="level-item">成长</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">3</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E6%89%80%E6%84%9F/">
+            <span class="level-start">
+                <span class="level-item">所感</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">3</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/">
+            <span class="level-start">
+                <span class="level-item">标准与规范</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%90%86%E8%B4%A2/">
+            <span class="level-start">
+                <span class="level-item">理财</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%94%9F%E6%B4%BB/">
+            <span class="level-start">
+                <span class="level-item">生活</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%AE%97%E6%B3%95/">
+            <span class="level-start">
+                <span class="level-item">算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">3</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/">
+            <span class="level-start">
+                <span class="level-item">系统装机</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">
+            <span class="level-start">
+                <span class="level-item">网络协议</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">3</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E8%AF%BB%E4%B9%A6/">
+            <span class="level-start">
+                <span class="level-item">读书</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">7</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/BASE%E7%90%86%E8%AE%BA/" style="font-size: 10px;">BASE理论</a> <a href="/tags/CAP%E7%90%86%E8%AE%BA/" style="font-size: 10px;">CAP理论</a> <a href="/tags/List/" style="font-size: 10px;">List</a> <a href="/tags/RPA/" style="font-size: 20px;">RPA</a> <a href="/tags/RPA%E7%BB%84%E4%BB%B6%E5%BA%93/" style="font-size: 13px;">RPA组件库</a> <a href="/tags/Saga/" style="font-size: 10px;">Saga</a> <a href="/tags/Spring/" style="font-size: 14px;">Spring</a> <a href="/tags/UiPath/" style="font-size: 20px;">UiPath</a> <a href="/tags/XA%E8%A7%84%E8%8C%83/" style="font-size: 10px;">XA规范</a> <a href="/tags/activiti/" style="font-size: 17px;">activiti</a> <a href="/tags/annotation%E6%B3%A8%E8%A7%A3/" style="font-size: 14px;">annotation注解</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/experienceShare/" style="font-size: 10px;">experienceShare</a> <a href="/tags/git/" style="font-size: 14px;">git</a> <a href="/tags/github/" style="font-size: 12px;">github</a> <a href="/tags/hexo/" style="font-size: 19px;">hexo</a> <a href="/tags/java/" style="font-size: 18px;">java</a> <a href="/tags/java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 14px;">java8新特性</a> <a href="/tags/java%E6%97%B6%E9%97%B4%E6%93%8D%E4%BD%9C/" style="font-size: 10px;">java时间操作</a> <a href="/tags/java%E6%AF%94%E8%BE%83%E5%99%A8/" style="font-size: 10px;">java比较器</a> <a href="/tags/java%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">java语法基础</a> <a href="/tags/key/" style="font-size: 10px;">key</a> <a href="/tags/lambda/" style="font-size: 10px;">lambda</a> <a href="/tags/paxos/" style="font-size: 12px;">paxos</a> <a href="/tags/php%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">php基础</a> <a href="/tags/php%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">php语言</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 15px;">事务</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 15px;">分布式</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 12px;">分布式一致性</a> <a href="/tags/%E6%88%90%E9%95%BF/" style="font-size: 12px;">成长</a> <a href="/tags/%E6%89%80%E6%84%9F/" style="font-size: 12px;">所感</a> <a href="/tags/%E6%8E%92%E5%BA%8F/" style="font-size: 11px;">排序</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 15px;">数据一致性</a> <a href="/tags/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/" style="font-size: 10px;">标准与规范</a> <a href="/tags/%E7%90%86%E8%B4%A2/" style="font-size: 10px;">理财</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 12px;">算法</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/" style="font-size: 10px;">系统装机</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" style="font-size: 12px;">网络协议</a> <a href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/" style="font-size: 16px;">读后感</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2020/11/6/interactive_rpa/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/../../../image/%E4%BA%A4%E4%BA%92%E5%BC%8FRPA%E4%BA%A4%E4%BA%92%E6%B5%81%E7%A8%8B%E6%A8%A1%E5%BC%8F.png" alt="交互式RPA实现方案">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-06T02:23:21.000Z">2020-11-06</time></div>
+                    <a href="/2020/11/6/interactive_rpa/" class="has-link-black-ter is-size-6">交互式RPA实现方案</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/UiPath/">UiPath</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2020/10/15/industryPotential/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="行业潜力调研">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-10-15T13:10:58.000Z">2020-10-15</time></div>
+                    <a href="/2020/10/15/industryPotential/" class="has-link-black-ter is-size-6">行业潜力调研</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E6%88%90%E9%95%BF/">成长</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2020/9/21/hangaozu/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="二十四史-汉高祖">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-21T12:45:31.000Z">2020-09-21</time></div>
+                    <a href="/2020/9/21/hangaozu/" class="has-link-black-ter is-size-6">二十四史-汉高祖</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2020/9/21/lvhou/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="二十四史-吕后本纪">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-21T12:45:13.000Z">2020-09-21</time></div>
+                    <a href="/2020/9/21/lvhou/" class="has-link-black-ter is-size-6">二十四史-吕后本纪</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2020/9/21/wenjing/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="二十四史-文景之治">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-21T12:44:54.000Z">2020-09-21</time></div>
+                    <a href="/2020/9/21/wenjing/" class="has-link-black-ter is-size-6">二十四史-文景之治</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">23</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">16</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/BASE%E7%90%86%E8%AE%BA/">
+                        <span class="tag">BASE理论</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CAP%E7%90%86%E8%AE%BA/">
+                        <span class="tag">CAP理论</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/List/">
+                        <span class="tag">List</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/RPA/">
+                        <span class="tag">RPA</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/RPA%E7%BB%84%E4%BB%B6%E5%BA%93/">
+                        <span class="tag">RPA组件库</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Saga/">
+                        <span class="tag">Saga</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring/">
+                        <span class="tag">Spring</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UiPath/">
+                        <span class="tag">UiPath</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/XA%E8%A7%84%E8%8C%83/">
+                        <span class="tag">XA规范</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/activiti/">
+                        <span class="tag">activiti</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/annotation%E6%B3%A8%E8%A7%A3/">
+                        <span class="tag">annotation注解</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/blog/">
+                        <span class="tag">blog</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/experienceShare/">
+                        <span class="tag">experienceShare</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/git/">
+                        <span class="tag">git</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/github/">
+                        <span class="tag">github</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/hexo/">
+                        <span class="tag">hexo</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java/">
+                        <span class="tag">java</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java8%E6%96%B0%E7%89%B9%E6%80%A7/">
+                        <span class="tag">java8新特性</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java%E6%97%B6%E9%97%B4%E6%93%8D%E4%BD%9C/">
+                        <span class="tag">java时间操作</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java%E6%AF%94%E8%BE%83%E5%99%A8/">
+                        <span class="tag">java比较器</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/">
+                        <span class="tag">java语法基础</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/key/">
+                        <span class="tag">key</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/lambda/">
+                        <span class="tag">lambda</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/paxos/">
+                        <span class="tag">paxos</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/php%E5%9F%BA%E7%A1%80/">
+                        <span class="tag">php基础</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/php%E8%AF%AD%E8%A8%80/">
+                        <span class="tag">php语言</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ssh/">
+                        <span class="tag">ssh</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E4%BA%8B%E5%8A%A1/">
+                        <span class="tag">事务</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">
+                        <span class="tag">分布式</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/">
+                        <span class="tag">分布式一致性</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%88%90%E9%95%BF/">
+                        <span class="tag">成长</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%89%80%E6%84%9F/">
+                        <span class="tag">所感</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%8E%92%E5%BA%8F/">
+                        <span class="tag">排序</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/">
+                        <span class="tag">数据一致性</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/">
+                        <span class="tag">标准与规范</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%90%86%E8%B4%A2/">
+                        <span class="tag">理财</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="tag">算法</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/">
+                        <span class="tag">系统装机</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">
+                        <span class="tag">网络协议</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/">
+                        <span class="tag">读后感</span>
+                        <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2020/11/6/interactive_rpa/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/../../../image/%E4%BA%A4%E4%BA%92%E5%BC%8FRPA%E4%BA%A4%E4%BA%92%E6%B5%81%E7%A8%8B%E6%A8%A1%E5%BC%8F.png" alt="交互式RPA实现方案">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-06T02:23:21.000Z">2020-11-06</time></div>
+                    <a href="/2020/11/6/interactive_rpa/" class="has-link-black-ter is-size-6">交互式RPA实现方案</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/UiPath/">UiPath</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2020/10/15/industryPotential/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="行业潜力调研">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-10-15T13:10:58.000Z">2020-10-15</time></div>
+                    <a href="/2020/10/15/industryPotential/" class="has-link-black-ter is-size-6">行业潜力调研</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E6%88%90%E9%95%BF/">成长</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2020/9/21/hangaozu/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="二十四史-汉高祖">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-21T12:45:31.000Z">2020-09-21</time></div>
+                    <a href="/2020/9/21/hangaozu/" class="has-link-black-ter is-size-6">二十四史-汉高祖</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2020/9/21/lvhou/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="二十四史-吕后本纪">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-21T12:45:13.000Z">2020-09-21</time></div>
+                    <a href="/2020/9/21/lvhou/" class="has-link-black-ter is-size-6">二十四史-吕后本纪</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2020/9/21/wenjing/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="二十四史-文景之治">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-21T12:44:54.000Z">2020-09-21</time></div>
+                    <a href="/2020/9/21/wenjing/" class="has-link-black-ter is-size-6">二十四史-文景之治</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">23</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">16</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/BASE%E7%90%86%E8%AE%BA/">
+                        <span class="tag">BASE理论</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CAP%E7%90%86%E8%AE%BA/">
+                        <span class="tag">CAP理论</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/List/">
+                        <span class="tag">List</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/RPA/">
+                        <span class="tag">RPA</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/RPA%E7%BB%84%E4%BB%B6%E5%BA%93/">
+                        <span class="tag">RPA组件库</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Saga/">
+                        <span class="tag">Saga</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring/">
+                        <span class="tag">Spring</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UiPath/">
+                        <span class="tag">UiPath</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/XA%E8%A7%84%E8%8C%83/">
+                        <span class="tag">XA规范</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/activiti/">
+                        <span class="tag">activiti</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/annotation%E6%B3%A8%E8%A7%A3/">
+                        <span class="tag">annotation注解</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/blog/">
+                        <span class="tag">blog</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/experienceShare/">
+                        <span class="tag">experienceShare</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/git/">
+                        <span class="tag">git</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/github/">
+                        <span class="tag">github</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/hexo/">
+                        <span class="tag">hexo</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java/">
+                        <span class="tag">java</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java8%E6%96%B0%E7%89%B9%E6%80%A7/">
+                        <span class="tag">java8新特性</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java%E6%97%B6%E9%97%B4%E6%93%8D%E4%BD%9C/">
+                        <span class="tag">java时间操作</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java%E6%AF%94%E8%BE%83%E5%99%A8/">
+                        <span class="tag">java比较器</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/">
+                        <span class="tag">java语法基础</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/key/">
+                        <span class="tag">key</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/lambda/">
+                        <span class="tag">lambda</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/paxos/">
+                        <span class="tag">paxos</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/php%E5%9F%BA%E7%A1%80/">
+                        <span class="tag">php基础</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/php%E8%AF%AD%E8%A8%80/">
+                        <span class="tag">php语言</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ssh/">
+                        <span class="tag">ssh</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E4%BA%8B%E5%8A%A1/">
+                        <span class="tag">事务</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">
+                        <span class="tag">分布式</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/">
+                        <span class="tag">分布式一致性</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%88%90%E9%95%BF/">
+                        <span class="tag">成长</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%89%80%E6%84%9F/">
+                        <span class="tag">所感</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%8E%92%E5%BA%8F/">
+                        <span class="tag">排序</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/">
+                        <span class="tag">数据一致性</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/">
+                        <span class="tag">标准与规范</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%90%86%E8%B4%A2/">
+                        <span class="tag">理财</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="tag">算法</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/">
+                        <span class="tag">系统装机</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">
+                        <span class="tag">网络协议</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/">
+                        <span class="tag">读后感</span>
+                        <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/monkeygeek.svg" alt="java中的比较器Comparable与Comparator" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2020 monkeyGeek&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="https://github.com/monkeyGeek369">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

@@ -2,23 +2,23 @@
 <html  lang="zh">
 <head>
     <meta charset="utf-8">
-<title>分类: activiti - monkeyGeek</title>
+<title>分类: 成长 - monkeyGeek</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
 
 
-    <meta name="description" content="activiti流程回退功能在原始api中并没有提供，需要我们自行实现，现有如下几种思路">
+    <meta name="description" content="为什么要写这篇文章？那是因为年近三十相对焦虑，对今后职业发展、家庭生活、健康、养老等一系列问题的担忧。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="activiti实现流程回退">
-<meta property="og:url" content="https://monkeygeek369.github.io/2020/6/30/activitiback/index.html">
+<meta property="og:title" content="人生规划">
+<meta property="og:url" content="https://monkeygeek369.github.io/2021/2/22/life-plan/index.html">
 <meta property="og:site_name" content="monkeyGeek">
-<meta property="og:description" content="activiti流程回退功能在原始api中并没有提供，需要我们自行实现，现有如下几种思路">
+<meta property="og:description" content="为什么要写这篇文章？那是因为年近三十相对焦虑，对今后职业发展、家庭生活、健康、养老等一系列问题的担忧。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://monkeygeek369.github.io/images/og_image.png">
-<meta property="article:published_time" content="2020-06-30T11:45:12.000Z">
-<meta property="article:modified_time" content="2020-06-30T11:45:12.000Z">
+<meta property="article:published_time" content="2021-02-22T13:33:23.000Z">
+<meta property="article:modified_time" content="2021-02-22T13:33:23.000Z">
 <meta property="article:author" content="monkeyGeek">
-<meta property="article:tag" content="activiti">
+<meta property="article:tag" content="成长">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://monkeygeek369.github.io/images/og_image.png">
 
@@ -94,7 +94,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/monkeygeek.svg" alt="activiti实现流程回退" height="28">
+                <img src="/images/monkeygeek.svg" alt="人生规划" height="28">
             
             </a>
         </div>
@@ -153,17 +153,17 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2020-06-30T11:45:12.000Z">2020-06-30</time>
+                <time class="level-item has-text-grey" datetime="2021-02-22T13:33:23.000Z">2021-02-22</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/activiti/">activiti</a>
+                <a class="has-link-grey -link" href="/categories/%E6%88%90%E9%95%BF/">成长</a>
                 </div>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    2 分钟 读完 (大约 319 个字)
+                    9 分钟 读完 (大约 1319 个字)
                 </span>
                 
                 
@@ -172,27 +172,58 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                activiti实现流程回退
+                人生规划
             
         </h1>
         <div class="content">
-            <p>activiti流程回退功能在原始api中并没有提供，需要我们自行实现，现有如下几种思路<a id="more"></a></p>
+            <p>为什么要写这篇文章？那是因为年近三十相对焦虑，对今后职业发展、家庭生活、健康、养老等一系列问题的担忧。<a id="more"></a>其实人就是这么奇怪，学生时期为进入社会而焦虑、初工作时为房子车子而焦虑、现在为今后的稳定而焦虑，每一个阶段随着眼界、阅历、需求的变化，我们看待世界的方式也在发生变化，这就是焦虑的根源。</p>
 <br>
 
-<h1 id="提供思路"><a href="#提供思路" class="headerlink" title="提供思路"></a>提供思路</h1><ul>
-<li>复制流程</li>
-</ul>
-<p>关闭当前流程并获取当前流程已执行节点信息（截止到当前节点的上一节点），创建新流程并将获取的已执行节点信息赋值系统控制走流程</p>
+<p>在正儿八经的聊人生规划之前首先需要聊一下国外一老爷子的高论“马斯洛需求理论”，如下图所示：</p>
+<p><img src="../../../../image/%E9%A9%AC%E6%96%AF%E6%B4%9B%E9%9C%80%E6%B1%82%E7%90%86%E8%AE%BA.png"></p>
+<p>初次看到这个理论时如获至宝。这不就是一个正常人类的大体发展脉络吗？这不就是我们寻找的人生规划吗？</p>
+<p>从最开始的生理需求到有家室后到安全需求，一层一层构建了我们追求一生的真谛。当然详细的理论可参考网络，这里仅仅是引述，下面我来聊一下经过自己思考和整理的人生规划方法论。</p>
+<br>
+
+<p>为了做好人生规划的方法论，我看了许多人分享的经历、方法和思考，然后结合自己的认知整理出如下五条策略。</p>
 <ul>
-<li>修改数据库</li>
+<li><p>梦想清单（即大目标）</p>
+<p>当找寻不到大目标的时候就去模仿，去模仿优秀的人，有了梦想后就要排优先级.这个大目标可以是生活、工作的，也可以是精神层面的。</p>
+</li>
+<li><p>做五年规划</p>
+</li>
 </ul>
-<p>获取上一节点任务信息，修改当前节点信息为上一节点任务信息，需要修改数据库表，如下：</p>
-<p>ACT_RU_TASK 正在运行的任务节点表</p>
-<p>ACT_RU_EXECUTION 运行时流程执行实例表</p>
-<p>ACT_HI_TASKINST 历史任务节点表(包括正在运行的)</p>
-<p>ACT_RU_IDENTITYLINK 任务与人员关联表</p>
+<p>按照五年的时间线来制定长远目标是合理的，如果时间过长制定的目标极有可能无法实现，因为随着时间的拉长社会和自己的认知都在变化，以过往老旧的思维方式制定的目标有可能过时，然而时间线过短不适合于远期目标的制定。五年刚好，我们如果把每一个五年都看作自己来到这个世界的一次历练，试想一下每一次历练我们可以反思可以继承上次历练的经验，是不是会很爽。</p>
+<ul>
+<li><p>目标分解</p>
+<p>远期目标往往是海市蜃楼，可望而不可及，在当下的我们需要将他们转化为切实可行，真真切切的小目标。利用逆向推导来分解小目标，利用smart原则来衡量小目标是否正确。</p>
+</li>
+<li><p>分段可执行</p>
+<p>将目标的执行过程具体化为年/半年/月/周来进行推进。执行阶段也是非常重要的一个环节，计划安排的过于死板有可能使我们无法坚持，致使计划破产，如果过于松散又没有约束力。因此寻找出适合自己的计划执行节奏非常重要。</p>
+</li>
+<li><p>复盘反思总结调整</p>
+<p>唯一可以确定一层不变的就是变化本身。对目标执行过程的反思，对方法论的总结，对目标的实时调整，这些才是符合现实逻辑的套路。</p>
+</li>
+</ul>
 <br>
 
+<p>关于规划的一些小思考</p>
+<ul>
+<li>时刻关注优先且不紧急的事情</li>
+</ul>
+<p>越来越多的人过着看着很忙，实际很空虚的生活。那是因为主要精力都用到了不重要的事情上。合理的处理方式是我们应该将80%的精力用在20%最重要且不紧急的事情上面。为什么不优先做重要且紧急的事情而去做重要不紧急的事情？那是为了防止事情逐渐演变成重要且紧急的事情，使自己的生活节奏彻底打乱。比如我们需要健康的身体，在锻炼身体这件事上就属于重要且不紧急，我们应该优先做，而不是等待成为紧急的事情后再去处理。</p>
+<ul>
+<li>努力提升自己，自己才是一切的本钱，包括赚钱。</li>
+<li>不断提升自己的认知，不打无准备之仗，不做自己认知外的事情。</li>
+<li>无论要实现什么目标或者做什么事情，一定一定要找到自己的动力来源，否则你会找一万种理由不去完成目标</li>
+</ul>
+<br>
+
+<br>
+
+<p>参考资料：</p>
+<p>[1]<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/303781246/answer/1560002946">https://www.zhihu.com/question/303781246/answer/1560002946</a></p>
+<p>[2]<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/41176561">https://zhuanlan.zhihu.com/p/41176561</a></p>
 <br>
 
 <script>
@@ -228,7 +259,7 @@ var _hmt = _hmt || [];
             <div class="level-start">
                 <div class="level-item">
                     <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                    <a class="has-link-grey -link-link" href="/tags/activiti/" rel="tag">activiti</a>
+                    <a class="has-link-grey -link-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a>
                 </div>
             </div>
         </div>
@@ -278,17 +309,10 @@ var _hmt = _hmt || [];
 <div class="card card-transparent">
     <div class="level post-navigation is-flex-wrap is-mobile">
         
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/6/30/activitilisten/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">activiti事件监听</span>
-            </a>
-        </div>
-        
         
         <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2020/6/22/activititable/">
-                <span class="level-item">Activiti数据库表结构说明</span>
+            <a class="level level-item has-link-grey  article-nav-next" href="/2021/2/20/investment/">
+                <span class="level-item">投资思考</span>
                 <i class="level-item fas fa-chevron-right"></i>
             </a>
         </div>
@@ -309,7 +333,7 @@ var _hmt = _hmt || [];
     var gitalk = new Gitalk({
         clientID: 'ddd4811074fe59faa56c',
         clientSecret: 'fb825479f2fcc898b38e240612a6c9eb45ff15d0',
-        id: 'ccd6a253d542a05c5e063fe10eed8fe5',
+        id: '4c90569f586937faad1d6fc21cfa409b',
         repo: 'monkeyGeek369.github.io',
         owner: 'monkeyGeek369',
         admin: "monkeyGeek369",
@@ -1814,7 +1838,7 @@ var _hmt = _hmt || [];
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/monkeygeek.svg" alt="activiti实现流程回退" height="28">
+                    <img src="/images/monkeygeek.svg" alt="人生规划" height="28">
                 
                 </a>
                 <p class="is-size-7">

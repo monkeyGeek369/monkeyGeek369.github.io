@@ -2,25 +2,25 @@
 <html  lang="zh">
 <head>
     <meta charset="utf-8">
-<title>分类: hexo - monkeyGeek</title>
+<title>分类: 成长 - monkeyGeek</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
 
 
-    <meta name="description" content="一、gitalk简介我们在利用github搭建个人博客的时候通常需要添加评论功能，以方便博主同其他志同道合的朋友进行交流。">
+    <meta name="description" content="经过行业、职业、巨头、风投等方面的相关调研现整理出四大方向。这四大行业方向的共同特点是发展可持续、发展前景广阔，非常适合持续深耕。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hexo主题icarus添加评论插件gitalk">
-<meta property="og:url" content="https://monkeygeek369.github.io/2019/8/10/icarus/index.html">
+<meta property="og:title" content="从业可行性调研">
+<meta property="og:url" content="https://monkeygeek369.github.io/2021/3/23/industry_feasibility/index.html">
 <meta property="og:site_name" content="monkeyGeek">
-<meta property="og:description" content="一、gitalk简介我们在利用github搭建个人博客的时候通常需要添加评论功能，以方便博主同其他志同道合的朋友进行交流。">
+<meta property="og:description" content="经过行业、职业、巨头、风投等方面的相关调研现整理出四大方向。这四大行业方向的共同特点是发展可持续、发展前景广阔，非常适合持续深耕。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://monkeygeek369.github.io/image/addgitalk.png">
-<meta property="article:published_time" content="2019-08-10T08:15:14.000Z">
-<meta property="article:modified_time" content="2019-08-10T08:15:14.000Z">
+<meta property="og:image" content="https://monkeygeek369.github.io/images/og_image.png">
+<meta property="article:published_time" content="2021-03-23T12:03:51.000Z">
+<meta property="article:modified_time" content="2021-03-23T12:03:51.000Z">
 <meta property="article:author" content="monkeyGeek">
-<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="行业">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://monkeygeek369.github.io/image/addgitalk.png">
+<meta name="twitter:image" content="https://monkeygeek369.github.io/images/og_image.png">
 
 
 
@@ -94,7 +94,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/monkeygeek.svg" alt="hexo主题icarus添加评论插件gitalk" height="28">
+                <img src="/images/monkeygeek.svg" alt="从业可行性调研" height="28">
             
             </a>
         </div>
@@ -149,27 +149,21 @@
             <div class="columns">
                 <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
     
-    <div class="card-image">
-        <span  class="image is-7by1">
-            <img class="thumbnail" src="/../../image/addgitalk.png" alt="hexo主题icarus添加评论插件gitalk">
-        </span>
-    </div>
-    
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-08-10T08:15:14.000Z">2019-08-10</time>
+                <time class="level-item has-text-grey" datetime="2021-03-23T12:03:51.000Z">2021-03-23</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/hexo/">hexo</a>
+                <a class="has-link-grey -link" href="/categories/%E6%88%90%E9%95%BF/">成长</a>
                 </div>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    8 分钟 读完 (大约 1150 个字)
+                    3 分钟 读完 (大约 378 个字)
                 </span>
                 
                 
@@ -178,39 +172,35 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                hexo主题icarus添加评论插件gitalk
+                从业可行性调研
             
         </h1>
         <div class="content">
-            <h1 id="一、gitalk简介"><a href="#一、gitalk简介" class="headerlink" title="一、gitalk简介"></a>一、gitalk简介</h1><p>我们在利用github搭建个人博客的时候通常需要添加评论功能，以方便博主同其他志同道合的朋友进行交流。<a id="more"></a>github本身是提供第三方api接入服务的，一些第三方服务提供方可以利用github提供的接口针对具体某github账户下的仓库进行操作，比如我们想要实现通过第三方服务针对自身账户下的某仓库进行远程添加issue问题功能等。</p>
-<p>正巧，github内总是有项目能够满足我们的需求。gitalk正是针对github评论功能而开发的第三方服务项目，除此之外还有gitment等，但是gitment很久没有维护了，本片文章针对gitalk进行详细应用介绍。</p>
-<h1 id="二、需求场景介绍"><a href="#二、需求场景介绍" class="headerlink" title="二、需求场景介绍"></a>二、需求场景介绍</h1><p>gitalk如何自定义配置到自己的博客？具体的操作大家可以访问gitalk的<a target="_blank" rel="noopener" href="https://github.com/gitalk/gitalk">原网址教程</a>，介绍的很详细，使用也相对简单。不过要说声抱歉的是，由于本人使用的hexo模板是<a target="_blank" rel="noopener" href="https://github.com/ppoffice/hexo-theme-icarus">icarus</a>，而这个模板其实已经帮助使用者将各种评论插件集成，例如gitalk，gitment，isso，disqus等，使用者只需要在主题的配置文件_config.yml中配置好相应的参数即可。</p>
-<h1 id="三、具体步骤"><a href="#三、具体步骤" class="headerlink" title="三、具体步骤"></a>三、具体步骤</h1><h3 id="3-1、创建github授权应用"><a href="#3-1、创建github授权应用" class="headerlink" title="3.1、创建github授权应用"></a>3.1、创建github授权应用</h3><p>登录github后（首先需要有github账户），一次点击settings/Developer settings/OAuth Apps，选择New OAuth App，将会看到如下界面：</p>
-<p>application name:自行取名，建议英文</p>
-<p>Homepage URL:自己博客的地址即可，如<a href="https://monkeygeek369.github.io/">https://monkeyGeek369.github.io</a></p>
-<p>description:输入描述</p>
-<p>callback URL:服务授权回调地址，也填写博客地址即可，如<a href="https://monkeygeek369.github.io/">https://monkeyGeek369.github.io</a></p>
-<p><img src="../../../../image/oauthappcreat.png"></p>
-<p>创建成功后将看到如下界面：</p>
-<p><img src="../../../../image/oauthappsuccess.png"></p>
-<p>其中Client ID和Client Secret将是我们后面用到的。</p>
-<h3 id="3-2、在主题中配置id和密钥"><a href="#3-2、在主题中配置id和密钥" class="headerlink" title="3.2、在主题中配置id和密钥"></a>3.2、在主题中配置id和密钥</h3><p>进入主题文件夹，打开_config.yml，进行如下设置：</p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">comment:</span><br><span class="line">    # Name of the comment plugin</span><br><span class="line">    type: gitalk</span><br><span class="line">    owner: monkeyGeek369         # github用户名</span><br><span class="line">    repo: monkeyGeek369.github.io          # github仓库名称，即博客仓库名称</span><br><span class="line">    client_id:      # (required) OAuth application client id</span><br><span class="line">    client_secret:  # (required) OAuth application client secret</span><br><span class="line">    admin: monkeyGeek369         # 指定本仓库的管理方账户名称，即拥有权限去调用授权接口的github账户</span><br></pre></td></tr></table></figure>
+            <p>经过行业、职业、巨头、风投等方面的相关调研现整理出四大方向。这四大行业方向的共同特点是发展可持续、发展前景广阔，非常适合持续深耕。<a id="more"></a>另一方面这四大行业对互联网也相对包容，信息化程度不高，适合具有互联网经验的从业人员入局，在入局后应该专注本行业内的业务和管理等方面的提升，互联网技术仅仅只是工具而已。</p>
+<br>
 
+<p>由于信息量过大，并非一文可以说明，因此本文仅仅针对大健康行业做详细调研，在调研方向上是以互联网从业者可以从事的职位以及具有发展潜力的职位为调研目标。</p>
+<br>
 
-<h3 id="3-3、博客仓库issue功能开启"><a href="#3-3、博客仓库issue功能开启" class="headerlink" title="3.3、博客仓库issue功能开启"></a>3.3、博客仓库issue功能开启</h3><p>点击博客仓库—点击settings，进行如下勾选设置</p>
-<p><img src="../../../../image/gitalkissue.png"></p>
-<h3 id="3-4、添加第一条评论"><a href="#3-4、添加第一条评论" class="headerlink" title="3.4、添加第一条评论"></a>3.4、添加第一条评论</h3><p>进入博客文章页面，添加第一条博客即可</p>
-<p><img src="../../../../image/addgitalk.png"></p>
-<h1 id="四、问题解决"><a href="#四、问题解决" class="headerlink" title="四、问题解决"></a>四、问题解决</h1><h3 id="4-1、初始化问题"><a href="#4-1、初始化问题" class="headerlink" title="4.1、初始化问题"></a>4.1、初始化问题</h3><p><img src="../../../../image/gitalkerror.png"></p>
-<p>我们在成功配置好评论插件后或许会出现以上问题，这种问题在gitalk中有详细介绍，大家也可以去gitalk查看详细解决方案。这种问题通常是由于博主未给文章评论初始化，博主只需要登陆github账户即可。</p>
-<h3 id="4-2、面对issues时选择登录github账户后出现404错误"><a href="#4-2、面对issues时选择登录github账户后出现404错误" class="headerlink" title="4.2、面对issues时选择登录github账户后出现404错误"></a>4.2、面对issues时选择登录github账户后出现404错误</h3><p>这个问题是因为github的issue问题label不能超过50个字符，label通常由gitalk自动取自当前博文页面的URL的pathname，所以必须确保我们的pathname足够短。需要准寻如下规则;</p>
-<ul>
-<li>需要在hexo的_config.yml中设置永久链接规则，如permalink: :year/:id/ # 网站的永久链接格式</li>
-<li>文章的永久链接尽量不要使用:title，如果非要使用那么尽可能使用英文，因为中文解析出来字符会非常多</li>
-<li>关于这个问题可以去看本站点内的“五、关于写作的那些事”</li>
-</ul>
-<p>关于这个问题还有其它解决方案，例如在gitalk配置文件内将lable的获取规则进行修改，进行md5加密等。详情可以看<a target="_blank" rel="noopener" href="https://github.com/gitalk/gitalk/issues/115#event-1539518527">问题连接</a></p>
+<p>大健康</p>
+<p><img src="../../../../image/%E5%8C%BB%E7%96%97%E8%A1%8C%E4%B8%9A%E5%9B%BE%E8%B0%B1.png"></p>
+<p><a target="_blank" rel="noopener" href="https://www.itjuzi.com/health">https://www.itjuzi.com/health</a></p>
+<p>医疗大数据</p>
+<p>AI医疗</p>
+<p>互联网医疗</p>
+<br>
+
+<p>养老行业</p>
+<br>
+
+<p>职业教育</p>
+<br>
+
+<p>保险行业</p>
+<br>
+
+<br>
+
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -244,7 +234,7 @@ var _hmt = _hmt || [];
             <div class="level-start">
                 <div class="level-item">
                     <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                    <a class="has-link-grey -link-link" href="/tags/hexo/" rel="tag">hexo</a>
+                    <a class="has-link-grey -link-link" href="/tags/%E8%A1%8C%E4%B8%9A/" rel="tag">行业</a>
                 </div>
             </div>
         </div>
@@ -294,17 +284,10 @@ var _hmt = _hmt || [];
 <div class="card card-transparent">
     <div class="level post-navigation is-flex-wrap is-mobile">
         
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/8/10/environment/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">一、hexo基础环境准备</span>
-            </a>
-        </div>
-        
         
         <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2019/8/6/softDevelop/">
-                <span class="level-item">软件研发（开发）流程与规范</span>
+            <a class="level level-item has-link-grey  article-nav-next" href="/2021/3/13/vc_industry/">
+                <span class="level-item">风投投资行业调研</span>
                 <i class="level-item fas fa-chevron-right"></i>
             </a>
         </div>
@@ -325,7 +308,7 @@ var _hmt = _hmt || [];
     var gitalk = new Gitalk({
         clientID: 'ddd4811074fe59faa56c',
         clientSecret: 'fb825479f2fcc898b38e240612a6c9eb45ff15d0',
-        id: '93df0aab66d99ec59403ab9c9d4dbe1b',
+        id: '2886976a368f8389c9a61b7940a9d10c',
         repo: 'monkeyGeek369.github.io',
         owner: 'monkeyGeek369',
         admin: "monkeyGeek369",
@@ -1880,7 +1863,7 @@ var _hmt = _hmt || [];
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/monkeygeek.svg" alt="hexo主题icarus添加评论插件gitalk" height="28">
+                    <img src="/images/monkeygeek.svg" alt="从业可行性调研" height="28">
                 
                 </a>
                 <p class="is-size-7">

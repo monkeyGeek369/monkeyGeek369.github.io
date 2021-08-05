@@ -1,0 +1,2347 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8">
+<title>分类: mq - monkeyGeek</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+
+
+    <meta name="description" content="SimpleMessageListenerContainer与DirectMessageListenerContainer详细介绍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rabbitmq中SimpleMessageListenerContainer与DirectMessageListenerContainer">
+<meta property="og:url" content="https://monkeygeek369.github.io/2021/8/4/rab-sim-dir/index.html">
+<meta property="og:site_name" content="monkeyGeek">
+<meta property="og:description" content="SimpleMessageListenerContainer与DirectMessageListenerContainer详细介绍">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://monkeygeek369.github.io/images/og_image.png">
+<meta property="article:published_time" content="2021-08-04T08:14:14.000Z">
+<meta property="article:modified_time" content="2021-08-04T08:14:14.000Z">
+<meta property="article:author" content="monkeyGeek">
+<meta property="article:tag" content="mq">
+<meta property="article:tag" content="rabbitmq">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://monkeygeek369.github.io/images/og_image.png">
+
+
+
+
+
+
+
+<link rel="icon" href="/images/monkeygeek.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/monkeygeek.svg" alt="rabbitmq中SimpleMessageListenerContainer与DirectMessageListenerContainer" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">首页</a>
+                
+                <a class="navbar-item"
+                href="/archives">时光飞逝</a>
+                
+                <a class="navbar-item"
+                href="/categories">技术乐园</a>
+                
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                
+                <a class="navbar-item"
+                href="/categories/experienceShare">经验分享</a>
+                
+                <a class="navbar-item"
+                href="/categories/aboutme">关于我</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Download on GitHub" href="https://github.com/monkeyGeek369">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2021-08-04T08:14:14.000Z">2021-08-04</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/mq/">mq</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    21 分钟 读完 (大约 3079 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                rabbitmq中SimpleMessageListenerContainer与DirectMessageListenerContainer
+            
+        </h1>
+        <div class="content">
+            <p>SimpleMessageListenerContainer与DirectMessageListenerContainer详细介绍<a id="more"></a></p>
+<br>
+
+<h1 id="SimpleMessageListenerContainer"><a href="#SimpleMessageListenerContainer" class="headerlink" title="SimpleMessageListenerContainer"></a>SimpleMessageListenerContainer</h1><p><img src="../../../../image/RabbitMQ%E4%B8%ADconnection%E4%B8%8Echannel.png"></p>
+<p><strong><u>消费者消费消息-单线程</u></strong></p>
+<ul>
+<li>通常一个应用创建一个connection连接（通过TCP实现）当然可以创建多个</li>
+<li>一个connection可被多个channel复用</li>
+<li>一个channel是单线程的</li>
+<li>channel单线程串行消费消息</li>
+</ul>
+<p><strong><u>消费者消费消息-多线程</u></strong></p>
+<ul>
+<li>通常一个应用创建一个connection连接（通过TCP实现）当然可以创建多个</li>
+<li>分布式服务创建各自对应的connection</li>
+<li>一个connection可被多个channel复用</li>
+<li>设置参数concurrency来控制线程数，相当于为每一个消费者创建了多个channel</li>
+<li>消费者对应的多个channel可以被不同的微服务共享，例如针对消费者consumer-a的Channel-a/Channel-b可以被微服务Application-b/Application-b1公用，只是线程不同</li>
+<li>channel单线程串行消费消息</li>
+</ul>
+<br>
+
+<p><strong><u>基本参数</u></strong></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleMessageListenerContainer</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractMessageListenerContainer</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> DEFAULT_START_CONSUMER_MIN_INTERVAL = <span class="hljs-number">10000L</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> DEFAULT_STOP_CONSUMER_MIN_INTERVAL = <span class="hljs-number">60000L</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> DEFAULT_CONSUMER_START_TIMEOUT = <span class="hljs-number">60000L</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> DEFAULT_CONSECUTIVE_ACTIVE_TRIGGER = <span class="hljs-number">10</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> DEFAULT_CONSECUTIVE_IDLE_TRIGGER = <span class="hljs-number">10</span>;</span><br><span class="line">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> DEFAULT_RECEIVE_TIMEOUT = <span class="hljs-number">1000L</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> AtomicLong lastNoMessageAlert = <span class="hljs-keyword">new</span> AtomicLong();</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> AtomicReference&lt;Thread&gt; containerStoppingForAbort = <span class="hljs-keyword">new</span> AtomicReference();</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> BlockingQueue&lt;ListenerContainerConsumerFailedEvent&gt; abortEvents = <span class="hljs-keyword">new</span> LinkedBlockingQueue();</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">long</span> startConsumerMinInterval = <span class="hljs-number">10000L</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">long</span> stopConsumerMinInterval = <span class="hljs-number">60000L</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> consecutiveActiveTrigger = <span class="hljs-number">10</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> consecutiveIdleTrigger = <span class="hljs-number">10</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> txSize = <span class="hljs-number">1</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> concurrentConsumers = <span class="hljs-number">1</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> Integer maxConcurrentConsumers;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">long</span> lastConsumerStarted;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">long</span> lastConsumerStopped;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">long</span> receiveTimeout = <span class="hljs-number">1000L</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> Set&lt;BlockingQueueConsumer&gt; consumers;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ActiveObjectCounter&lt;BlockingQueueConsumer&gt; cancellationLock = <span class="hljs-keyword">new</span> ActiveObjectCounter();</span><br><span class="line">    <span class="hljs-keyword">private</span> Integer declarationRetries;</span><br><span class="line">    <span class="hljs-keyword">private</span> Long retryDeclarationInterval;</span><br><span class="line">    <span class="hljs-keyword">private</span> TransactionTemplate transactionTemplate;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">long</span> consumerStartTimeout = <span class="hljs-number">60000L</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>concurrentConsumers：设置当前消费者数量，默认一个，初始化时自动设置</li>
+<li>maxConcurrentConsumers：设置最大消费者数量，根据消息数量动态浮动</li>
+<li>consumers：消费者集合，每一个consumer对应一个channel对应一个线程</li>
+</ul>
+<br>
+
+<p><strong><u>Consumers初始化</u></strong></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">int</span> <span class="hljs-title">initializeConsumers</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;</span><br><span class="line">        <span class="hljs-keyword">synchronized</span>(<span class="hljs-keyword">this</span>.consumersMonitor) &#123;</span><br><span class="line">            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.consumers == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                <span class="hljs-keyword">this</span>.cancellationLock.reset();</span><br><span class="line">                <span class="hljs-keyword">this</span>.consumers = <span class="hljs-keyword">new</span> HashSet(<span class="hljs-keyword">this</span>.concurrentConsumers);</span><br><span class="line"></span><br><span class="line">                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">this</span>.concurrentConsumers; ++i) &#123;</span><br><span class="line">                    BlockingQueueConsumer consumer = <span class="hljs-keyword">this</span>.createBlockingQueueConsumer();</span><br><span class="line">                    <span class="hljs-keyword">this</span>.consumers.add(consumer);</span><br><span class="line">                    ++count;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="hljs-keyword">return</span> count;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>根据设定的concurrentConsumers来初始化数量</p>
+<br>
+
+<p><strong><u>BlockingQueueConsumer基本参数</u></strong></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Log logger = LogFactory.getLog(BlockingQueueConsumer.class);</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> BlockingQueue&lt;Delivery&gt; queue;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> ShutdownSignalException shutdown;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String[] queues;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> prefetchCount;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">boolean</span> transactional;</span><br><span class="line"><span class="hljs-keyword">private</span> Channel channel;</span><br><span class="line"><span class="hljs-keyword">private</span> RabbitResourceHolder resourceHolder;</span><br><span class="line"><span class="hljs-keyword">private</span> BlockingQueueConsumer.InternalConsumer consumer;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> AtomicBoolean cancelled;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> AcknowledgeMode acknowledgeMode;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ConnectionFactory connectionFactory;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> MessagePropertiesConverter messagePropertiesConverter;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ActiveObjectCounter&lt;BlockingQueueConsumer&gt; activeObjectCounter;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;String, Object&gt; consumerArgs;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">boolean</span> noLocal;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">boolean</span> exclusive;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Set&lt;Long&gt; deliveryTags;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">boolean</span> defaultRequeueRejected;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;String, String&gt; consumerTags;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Set&lt;String&gt; missingQueues;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">long</span> retryDeclarationInterval;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">long</span> failedDeclarationRetryInterval;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> declarationRetries;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">long</span> lastRetryDeclaration;</span><br><span class="line"><span class="hljs-keyword">private</span> ConsumerTagStrategy tagStrategy;</span><br><span class="line"><span class="hljs-keyword">private</span> BackOffExecution backOffExecution;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">long</span> shutdownTimeout;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> locallyTransacted;</span><br><span class="line"><span class="hljs-keyword">private</span> ApplicationEventPublisher applicationEventPublisher;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">long</span> abortStarted;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">boolean</span> normalCancel;</span><br><span class="line"><span class="hljs-keyword">volatile</span> Thread thread;</span><br><span class="line"><span class="hljs-keyword">volatile</span> <span class="hljs-keyword">boolean</span> declaring;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>一个消费者可以监听多个队列</li>
+<li>prefetchCount：用于控制每次从队列抓取消息的数量</li>
+<li>Channel：对应的channel信息</li>
+<li>thread：消费者对应的线程对象</li>
+</ul>
+<br>
+
+<p><strong><u>线程处理核心代码</u></strong></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">start</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> AmqpException </span>&#123;</span><br><span class="line">......</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.cancelled()) &#123;</span><br><span class="line">                String[] var2 = <span class="hljs-keyword">this</span>.queues;</span><br><span class="line">                <span class="hljs-keyword">int</span> var3 = var2.length;</span><br><span class="line"></span><br><span class="line">                <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> var4 = <span class="hljs-number">0</span>; var4 &lt; var3; ++var4) &#123;</span><br><span class="line">                    String queueName = var2[var4];</span><br><span class="line">                    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.missingQueues.contains(queueName)) &#123;</span><br><span class="line">                      <span class="hljs-comment">//从队列中消费消息</span></span><br><span class="line">                        <span class="hljs-keyword">this</span>.consumeFromQueue(queueName);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (IOException var9) &#123;</span><br><span class="line">            <span class="hljs-keyword">throw</span> RabbitExceptionTranslator.convertRabbitAccessException(var9);</span><br><span class="line">        &#125;</span><br><span class="line">......</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">consumeFromQueue</span><span class="hljs-params">(String queue)</span> <span class="hljs-keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        String consumerTag = <span class="hljs-keyword">this</span>.channel.basicConsume(queue, <span class="hljs-keyword">this</span>.acknowledgeMode.isAutoAck(), <span class="hljs-keyword">this</span>.tagStrategy != <span class="hljs-keyword">null</span> ? <span class="hljs-keyword">this</span>.tagStrategy.createConsumerTag(queue) : <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-keyword">this</span>.noLocal, <span class="hljs-keyword">this</span>.exclusive, <span class="hljs-keyword">this</span>.consumerArgs, <span class="hljs-keyword">new</span> BlockingQueueConsumer.ConsumerDecorator(queue, <span class="hljs-keyword">this</span>.consumer, <span class="hljs-keyword">this</span>.applicationEventPublisher));</span><br><span class="line">        <span class="hljs-keyword">if</span> (consumerTag != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">this</span>.consumerTags.put(consumerTag, queue);</span><br><span class="line">            <span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">                logger.debug(<span class="hljs-string">&quot;Started on queue &#x27;&quot;</span> + queue + <span class="hljs-string">&quot;&#x27; with tag &quot;</span> + consumerTag + <span class="hljs-string">&quot;: &quot;</span> + <span class="hljs-keyword">this</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            logger.error(<span class="hljs-string">&quot;Null consumer tag received for queue &quot;</span> + queue);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<br>
+
+<p><strong><u>消息消费的底层逻辑</u></strong></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">basicConsume</span><span class="hljs-params">(String queue, <span class="hljs-keyword">final</span> <span class="hljs-keyword">boolean</span> autoAck, String consumerTag, <span class="hljs-keyword">boolean</span> noLocal, <span class="hljs-keyword">boolean</span> exclusive, Map&lt;String, Object&gt; arguments, <span class="hljs-keyword">final</span> Consumer callback)</span> <span class="hljs-keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    Method m = (<span class="hljs-keyword">new</span> com.rabbitmq.client.AMQP.Basic.Consume.Builder()).queue(queue).consumerTag(consumerTag).noLocal(noLocal).noAck(autoAck).exclusive(exclusive).arguments(arguments).build();</span><br><span class="line">    BlockingRpcContinuation&lt;String&gt; k = <span class="hljs-keyword">new</span> BlockingRpcContinuation&lt;String&gt;(m) &#123;</span><br><span class="line">        <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">transformReply</span><span class="hljs-params">(AMQCommand replyCommand)</span> </span>&#123;</span><br><span class="line">            String actualConsumerTag = ((ConsumeOk)replyCommand.getMethod()).getConsumerTag();</span><br><span class="line">            ChannelN.<span class="hljs-keyword">this</span>._consumers.put(actualConsumerTag, callback);</span><br><span class="line">            ChannelN.<span class="hljs-keyword">this</span>.metricsCollector.basicConsume(ChannelN.<span class="hljs-keyword">this</span>, actualConsumerTag, autoAck);</span><br><span class="line">            ChannelN.<span class="hljs-keyword">this</span>.dispatcher.handleConsumeOk(callback, actualConsumerTag);</span><br><span class="line">            <span class="hljs-keyword">return</span> actualConsumerTag;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="hljs-keyword">this</span>.rpc(m, k);</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._rpcTimeout == <span class="hljs-number">0</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> (String)k.getReply();</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                <span class="hljs-keyword">return</span> (String)k.getReply(<span class="hljs-keyword">this</span>._rpcTimeout);</span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (TimeoutException var11) &#123;</span><br><span class="line">                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">this</span>.wrapTimeoutException(m, var11);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="hljs-keyword">catch</span> (ShutdownSignalException var12) &#123;</span><br><span class="line">        <span class="hljs-keyword">throw</span> wrap(var12);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>利用rpc进行消息消费的远程通信</li>
+<li>底层利用反射机制生产消费者类和处理方法</li>
+</ul>
+<br>
+
+<p><strong><u>总结：</u></strong></p>
+<ul>
+<li>SimpleMessageListenerContainer是最简单的消息监听容器，使用简单，适合并发要求不高的场景</li>
+<li>单线程串行执行，如果消费者处理时间过长，很有可能造成消息积压</li>
+<li>如果代码中发生重复ack，channel将会被关闭并报异常，通道关闭后造成消息积压</li>
+<li>由于没有使用线程池，多线程切换会影响效率</li>
+</ul>
+<figure class="highlight hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java.lang.IllegalStateException: Channel closed; cannot ack/nack^@#\tat org.springframework.amqp.rabbit.connection.CachingConnectionFactory$CachedChannelInvocationHandler.invoke(CachingConnectionFactory.java:982)^@#\tat com.sun.proxy.$Proxy248.basicAck(Unknown Source)^@#\tat com.yqn.pac.zuul.dispatch.mq.TaskResultConsumerTest.dispatch(TaskResultConsumerTest.java:27)^@#\tat sun.reflect.GeneratedMethodAccessor130.invoke(Unknown Source)^@#\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)^@#\tat java.lang.reflect.Method.invoke(Method.java:498)^@#\tat org.springframework.messaging.handler.invocation.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:181)^@#\tat org.springframework.messaging.handler.invocation.InvocableHandlerMethod.invoke(InvocableHandlerMethod.java:114)^@#\tat org.springframework.amqp.rabbit.listener.adapter.HandlerAdapter.invoke(HandlerAdapter.java:51)^@#\tat org.springframework.amqp.rabbit.listener.adapter.MessagingMessageListenerAdapter.invokeHandler(MessagingMessageListenerAdapter.java:182)^@#\tat org.springframework.amqp.rabbit.listener.adapter.MessagingMessageListenerAdapter.onMessage(MessagingMessageListenerAdapter.java:120)^@#\tat org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer.doInvokeListener(AbstractMessageListenerContainer.java:1414)^@#\tat org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer.actualInvokeListener(AbstractMessageListenerContainer.java:1337)^@#\tat org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer.invokeListener(AbstractMessageListenerContainer.java:1324)^@#\tat org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer.executeListener(AbstractMessageListenerContainer.java:1303)^@#\tat org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer.doReceiveAndExecute(SimpleMessageListenerContainer.java:817)^@#\tat org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer.receiveAndExecute(SimpleMessageListenerContainer.java:801)^@#\tat org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer.access$700(SimpleMessageListenerContainer.java:77)^@#\tat org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer$AsyncMessageProcessingConsumer.run(SimpleMessageListenerContainer.java:1042)^@#\tat java.lang.Thread.run(Thread.java:748)^@#</span><br></pre></td></tr></table></figure>
+
+
+<br>
+
+<br>
+
+<br>
+
+<h1 id="DirectMessageListenerContainer"><a href="#DirectMessageListenerContainer" class="headerlink" title="DirectMessageListenerContainer"></a>DirectMessageListenerContainer</h1><p><img src="../../../../image/RabbitMQ%E4%B8%ADDirectMessageListenerContainer.png"></p>
+<p><strong><u>共用线程池</u></strong></p>
+<ul>
+<li>被@RabbitListener标记的消费者方法对应独立的RabbitListenerContainer</li>
+<li>应用配置一个RabbitListenerContainerFactory且所有的queue使用相同消费者方法（@RabbitListener标记）时，每一个queue使用相同的线程池</li>
+<li>消费者queue依然可以利用consumersPerQueue参数指定消费者并发数量，即多个channel</li>
+<li>channel对应的线程交由线程池管理</li>
+</ul>
+<p><strong><u>独立线程池</u></strong></p>
+<ul>
+<li>被@RabbitListener标记的消费者方法对应独立的RabbitListenerContainer</li>
+<li>应用配置多个RabbitListenerContainerFactory，每个消费者指定不同的监听容器工厂可以实现独立线程池使用</li>
+<li>应用配置一个RabbitListenerContainerFactory，每个队列拥有不同的消费者方法可以实现独立线程池使用</li>
+</ul>
+<br>
+
+<p><strong><u>基本参数</u></strong></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> DEFAULT_MONITOR_INTERVAL = <span class="hljs-number">10000</span>;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> DEFAULT_ACK_TIMEOUT = <span class="hljs-number">20000</span>;</span><br><span class="line"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">final</span> List&lt;DirectMessageListenerContainer.SimpleConsumer&gt; consumers = <span class="hljs-keyword">new</span> LinkedList();</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> List&lt;DirectMessageListenerContainer.SimpleConsumer&gt; consumersToRestart = <span class="hljs-keyword">new</span> LinkedList();</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> MultiValueMap&lt;String, DirectMessageListenerContainer.SimpleConsumer&gt; consumersByQueue = <span class="hljs-keyword">new</span> LinkedMultiValueMap();</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ActiveObjectCounter&lt;DirectMessageListenerContainer.SimpleConsumer&gt; cancellationLock = <span class="hljs-keyword">new</span> ActiveObjectCounter();</span><br><span class="line"><span class="hljs-keyword">private</span> TaskScheduler taskScheduler;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> taskSchedulerSet;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">long</span> monitorInterval = <span class="hljs-number">10000L</span>;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> messagesPerAck;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">long</span> ackTimeout = <span class="hljs-number">20000L</span>;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">boolean</span> started;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">boolean</span> aborted;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">boolean</span> hasStopped;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> CountDownLatch startedLatch = <span class="hljs-keyword">new</span> CountDownLatch(<span class="hljs-number">1</span>);</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> consumersPerQueue = <span class="hljs-number">1</span>;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> ScheduledFuture&lt;?&gt; consumerMonitorTask;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">long</span> lastAlertAt;</span><br><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">long</span> lastRestartAttempt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>consumers：容器内的消费者集合，每一个消费者对象都有对应的channel、queue</li>
+<li>consumersByQueue：以队列名称为key的消费者map，一个queue可能对应多个消费者</li>
+<li>taskScheduler：线程池ThreadPoolTaskScheduler，支持容器内所有消费者</li>
+<li>consumersPerQueue：每一个队列设定的消费者数量，即channel数量</li>
+</ul>
+<br>
+
+<p><strong><u>线程池初始化</u></strong></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setTaskScheduler</span><span class="hljs-params">(TaskScheduler taskScheduler)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.taskScheduler = taskScheduler;</span><br><span class="line">        <span class="hljs-keyword">this</span>.taskSchedulerSet = <span class="hljs-keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doInitialize</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.taskScheduler == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">        ThreadPoolTaskScheduler threadPoolTaskScheduler = <span class="hljs-keyword">new</span> ThreadPoolTaskScheduler();</span><br><span class="line">        threadPoolTaskScheduler.setThreadNamePrefix(<span class="hljs-keyword">this</span>.getBeanName() + <span class="hljs-string">&quot;-consumerMonitor-&quot;</span>);</span><br><span class="line">        threadPoolTaskScheduler.afterPropertiesSet();</span><br><span class="line">        <span class="hljs-keyword">this</span>.taskScheduler = threadPoolTaskScheduler;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.messagesPerAck &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">        Assert.state(!<span class="hljs-keyword">this</span>.isChannelTransacted(), <span class="hljs-string">&quot;&#x27;messagesPerAck&#x27; is not allowed with transactions&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以自由设定TaskScheduler,如果不设定则默认使用ThreadPoolTaskScheduler</p>
+<br>
+
+<p><strong><u>线程池使用</u></strong></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">actualStart</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">this</span>.aborted = <span class="hljs-keyword">false</span>;</span><br><span class="line">    <span class="hljs-keyword">this</span>.hasStopped = <span class="hljs-keyword">false</span>;</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.getPrefetchCount() &lt; <span class="hljs-keyword">this</span>.messagesPerAck) &#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.setPrefetchCount(<span class="hljs-keyword">this</span>.messagesPerAck);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">super</span>.doStart();</span><br><span class="line">    String[] queueNames = <span class="hljs-keyword">this</span>.getQueueNames();</span><br><span class="line">    <span class="hljs-keyword">this</span>.checkMissingQueues(queueNames);</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.getTaskExecutor() == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.afterPropertiesSet();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">long</span> idleEventInterval = <span class="hljs-keyword">this</span>.getIdleEventInterval();</span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.taskScheduler == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.afterPropertiesSet();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">if</span> (idleEventInterval &gt; <span class="hljs-number">0L</span> &amp;&amp; <span class="hljs-keyword">this</span>.monitorInterval &gt; idleEventInterval) &#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.monitorInterval = idleEventInterval / <span class="hljs-number">2L</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.getFailedDeclarationRetryInterval() &lt; <span class="hljs-keyword">this</span>.monitorInterval) &#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.monitorInterval = <span class="hljs-keyword">this</span>.getFailedDeclarationRetryInterval();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">this</span>.lastRestartAttempt = System.currentTimeMillis();</span><br><span class="line">    <span class="hljs-keyword">this</span>.consumerMonitorTask = <span class="hljs-keyword">this</span>.taskScheduler.scheduleAtFixedRate(() -&gt; &#123;</span><br><span class="line">        <span class="hljs-keyword">long</span> now = System.currentTimeMillis();</span><br><span class="line">        <span class="hljs-keyword">if</span> (idleEventInterval &gt; <span class="hljs-number">0L</span> &amp;&amp; now - <span class="hljs-keyword">this</span>.getLastReceive() &gt; idleEventInterval &amp;&amp; now - <span class="hljs-keyword">this</span>.lastAlertAt &gt; idleEventInterval) &#123;</span><br><span class="line">            <span class="hljs-keyword">this</span>.publishIdleContainerEvent(now - <span class="hljs-keyword">this</span>.getLastReceive());</span><br><span class="line">            <span class="hljs-keyword">this</span>.lastAlertAt = now;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        List consumersToCancel;</span><br><span class="line">        <span class="hljs-keyword">synchronized</span>(<span class="hljs-keyword">this</span>.consumersMonitor) &#123;</span><br><span class="line">            consumersToCancel = (List)<span class="hljs-keyword">this</span>.consumers.stream().filter((c) -&gt; &#123;</span><br><span class="line">                <span class="hljs-keyword">boolean</span> open = c.getChannel().isOpen();</span><br><span class="line">                <span class="hljs-keyword">if</span> (open &amp;&amp; <span class="hljs-keyword">this</span>.messagesPerAck &gt; <span class="hljs-number">1</span>) &#123;</span><br><span class="line">                    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                        c.ackIfNecessary(now);</span><br><span class="line">                    &#125; <span class="hljs-keyword">catch</span> (IOException var6) &#123;</span><br><span class="line">                        <span class="hljs-keyword">this</span>.logger.error(<span class="hljs-string">&quot;Exception while sending delayed ack&quot;</span>, var6);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="hljs-keyword">return</span> !open;</span><br><span class="line">            &#125;).collect(Collectors.toList());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        consumersToCancel.forEach((c) -&gt; &#123;</span><br><span class="line">            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                RabbitUtils.closeMessageConsumer(c.getChannel(), Collections.singletonList(c.getConsumerTag()), <span class="hljs-keyword">this</span>.isChannelTransacted());</span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (Exception var3) &#123;</span><br><span class="line">                <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.logger.isDebugEnabled()) &#123;</span><br><span class="line">                    <span class="hljs-keyword">this</span>.logger.debug(<span class="hljs-string">&quot;Error closing consumer &quot;</span> + c, var3);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="hljs-keyword">this</span>.logger.error(<span class="hljs-string">&quot;Consumer canceled - channel closed &quot;</span> + c);</span><br><span class="line">            c.cancelConsumer(<span class="hljs-string">&quot;Consumer &quot;</span> + c + <span class="hljs-string">&quot; channel closed&quot;</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.lastRestartAttempt + <span class="hljs-keyword">this</span>.getFailedDeclarationRetryInterval() &lt; now) &#123;</span><br><span class="line">            <span class="hljs-keyword">synchronized</span>(<span class="hljs-keyword">this</span>.consumersMonitor) &#123;</span><br><span class="line">                List&lt;DirectMessageListenerContainer.SimpleConsumer&gt; restartableConsumers = <span class="hljs-keyword">new</span> ArrayList(<span class="hljs-keyword">this</span>.consumersToRestart);</span><br><span class="line">                <span class="hljs-keyword">this</span>.consumersToRestart.clear();</span><br><span class="line">                <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.started) &#123;</span><br><span class="line">                    <span class="hljs-keyword">if</span> (restartableConsumers.size() &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">                        <span class="hljs-keyword">this</span>.doRedeclareElementsIfNecessary();</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    Iterator var8 = restartableConsumers.iterator();</span><br><span class="line"></span><br><span class="line">                    <span class="hljs-keyword">while</span>(var8.hasNext()) &#123;</span><br><span class="line">                        DirectMessageListenerContainer.SimpleConsumer consumer = (DirectMessageListenerContainer.SimpleConsumer)var8.next();</span><br><span class="line">                        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.logger.isDebugEnabled() &amp;&amp; restartableConsumers.size() &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">                            <span class="hljs-keyword">this</span>.logger.debug(<span class="hljs-string">&quot;Attempting to restart consumer &quot;</span> + consumer);</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                            <span class="hljs-keyword">this</span>.doConsumeFromQueue(consumer.getQueue());</span><br><span class="line">                        &#125; <span class="hljs-keyword">catch</span> (AmqpIOException | AmqpConnectException var13) &#123;</span><br><span class="line">                            <span class="hljs-keyword">this</span>.logger.error(<span class="hljs-string">&quot;Cannot connect to server&quot;</span>, var13);</span><br><span class="line">                            <span class="hljs-keyword">if</span> (var13.getCause() <span class="hljs-keyword">instanceof</span> AmqpApplicationContextClosedException) &#123;</span><br><span class="line">                                <span class="hljs-keyword">this</span>.logger.error(<span class="hljs-string">&quot;Application context is closed, terminating&quot;</span>);</span><br><span class="line">                                <span class="hljs-keyword">this</span>.taskScheduler.schedule(<span class="hljs-keyword">this</span>::stop, <span class="hljs-keyword">new</span> Date());</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="hljs-keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="hljs-keyword">this</span>.lastRestartAttempt = now;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">this</span>.processMonitorTask();</span><br><span class="line">    &#125;, <span class="hljs-keyword">this</span>.monitorInterval);</span><br><span class="line">    <span class="hljs-keyword">if</span> (queueNames.length &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.doRedeclareElementsIfNecessary();</span><br><span class="line">      <span class="hljs-comment">//根据queue名称来执行线程池线程</span></span><br><span class="line">        <span class="hljs-keyword">this</span>.getTaskExecutor().execute(() -&gt; &#123;</span><br><span class="line">            <span class="hljs-keyword">synchronized</span>(<span class="hljs-keyword">this</span>.consumersMonitor) &#123;</span><br><span class="line">                <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.hasStopped) &#123;</span><br><span class="line">                    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.logger.isDebugEnabled()) &#123;</span><br><span class="line">                        <span class="hljs-keyword">this</span>.logger.debug(<span class="hljs-string">&quot;Consumer start aborted - container stopping&quot;</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">                    BackOffExecution backOffExecution = <span class="hljs-keyword">this</span>.getRecoveryBackOff().start();</span><br><span class="line"></span><br><span class="line">                    <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123;</span><br><span class="line">                        label54:</span><br><span class="line">                        <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123;</span><br><span class="line">                            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.started || !<span class="hljs-keyword">this</span>.isRunning()) &#123;</span><br><span class="line">                                <span class="hljs-keyword">return</span>;</span><br><span class="line">                            &#125;</span><br><span class="line"></span><br><span class="line">                            <span class="hljs-keyword">this</span>.cancellationLock.reset();</span><br><span class="line"></span><br><span class="line">                            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                                String[] var4 = queueNames;</span><br><span class="line">                                <span class="hljs-keyword">int</span> var12 = queueNames.length;</span><br><span class="line">                                <span class="hljs-keyword">int</span> var6 = <span class="hljs-number">0</span>;</span><br><span class="line"></span><br><span class="line">                                <span class="hljs-keyword">while</span>(<span class="hljs-keyword">true</span>) &#123;</span><br><span class="line">                                    <span class="hljs-keyword">if</span> (var6 &gt;= var12) &#123;</span><br><span class="line">                                        <span class="hljs-keyword">break</span> label54;</span><br><span class="line">                                    &#125;</span><br><span class="line"></span><br><span class="line">                                    String queue = var4[var6];</span><br><span class="line">                                  <span class="hljs-comment">//消费者消费消息的核心方法</span></span><br><span class="line">                                    <span class="hljs-keyword">this</span>.consumeFromQueue(queue);</span><br><span class="line">                                    ++var6;</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125; <span class="hljs-keyword">catch</span> (AmqpIOException | AmqpConnectException var10) &#123;</span><br><span class="line">                                <span class="hljs-keyword">long</span> nextBackOff = backOffExecution.nextBackOff();</span><br><span class="line">                                <span class="hljs-keyword">if</span> (nextBackOff &lt; <span class="hljs-number">0L</span> || var10.getCause() <span class="hljs-keyword">instanceof</span> AmqpApplicationContextClosedException) &#123;</span><br><span class="line">                                    <span class="hljs-keyword">this</span>.aborted = <span class="hljs-keyword">true</span>;</span><br><span class="line">                                    <span class="hljs-keyword">this</span>.shutdown();</span><br><span class="line">                                    <span class="hljs-keyword">this</span>.logger.error(<span class="hljs-string">&quot;Failed to start container - fatal error or backOffs exhausted&quot;</span>, var10);</span><br><span class="line">                                    <span class="hljs-keyword">this</span>.taskScheduler.schedule(<span class="hljs-keyword">this</span>::stop, <span class="hljs-keyword">new</span> Date());</span><br><span class="line">                                    <span class="hljs-keyword">return</span>;</span><br><span class="line">                                &#125;</span><br><span class="line"></span><br><span class="line">                                <span class="hljs-keyword">this</span>.logger.error(<span class="hljs-string">&quot;Error creating consumer; retrying in &quot;</span> + nextBackOff, var10);</span><br><span class="line">                                <span class="hljs-keyword">this</span>.doShutdown();</span><br><span class="line"></span><br><span class="line">                                <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                                    Thread.sleep(nextBackOff);</span><br><span class="line">                                &#125; <span class="hljs-keyword">catch</span> (InterruptedException var9) &#123;</span><br><span class="line">                                    Thread.currentThread().interrupt();</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        <span class="hljs-keyword">this</span>.started = <span class="hljs-keyword">true</span>;</span><br><span class="line">                        <span class="hljs-keyword">this</span>.startedLatch.countDown();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.started = <span class="hljs-keyword">true</span>;</span><br><span class="line">        <span class="hljs-keyword">this</span>.startedLatch.countDown();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.logger.isInfoEnabled()) &#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.logger.info(<span class="hljs-string">&quot;Container initialized for queues: &quot;</span> + Arrays.asList(queueNames));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<br>
+
+<p><strong><u>消费者并发</u></strong></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">consumeFromQueue</span><span class="hljs-params">(String queue)</span> </span>&#123;</span><br><span class="line">  <span class="hljs-comment">//根据queue名称来获取所有的消费者</span></span><br><span class="line">    List&lt;DirectMessageListenerContainer.SimpleConsumer&gt; list = (List)<span class="hljs-keyword">this</span>.consumersByQueue.get(queue);</span><br><span class="line">  </span><br><span class="line">    <span class="hljs-keyword">if</span> (CollectionUtils.isEmpty(list)) &#123;</span><br><span class="line">      <span class="hljs-comment">//根据consumersPerQueue参数来控制每一个queue的数量</span></span><br><span class="line">        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">this</span>.consumersPerQueue; ++i) &#123;</span><br><span class="line">            <span class="hljs-keyword">this</span>.doConsumeFromQueue(queue);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<br>
+
+<p><strong><u>消费者消费</u></strong></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doConsumeFromQueue</span><span class="hljs-params">(String queue)</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.isActive()) &#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.logger.isDebugEnabled()) &#123;</span><br><span class="line">            <span class="hljs-keyword">this</span>.logger.debug(<span class="hljs-string">&quot;Consume from queue &quot;</span> + queue + <span class="hljs-string">&quot; ignore, container stopping&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">        String routingLookupKey = <span class="hljs-keyword">this</span>.getRoutingLookupKey();</span><br><span class="line">        <span class="hljs-keyword">if</span> (routingLookupKey != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">            SimpleResourceHolder.bind(<span class="hljs-keyword">this</span>.getRoutingConnectionFactory(), routingLookupKey);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Connection connection = <span class="hljs-keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            connection = <span class="hljs-keyword">this</span>.getConnectionFactory().createConnection();</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (Exception var14) &#123;</span><br><span class="line">            <span class="hljs-keyword">this</span>.addConsumerToRestart(<span class="hljs-keyword">new</span> DirectMessageListenerContainer.SimpleConsumer((Connection)<span class="hljs-keyword">null</span>, (Channel)<span class="hljs-keyword">null</span>, queue));</span><br><span class="line">            <span class="hljs-keyword">throw</span> var14 <span class="hljs-keyword">instanceof</span> AmqpConnectException ? (AmqpConnectException)var14 : <span class="hljs-keyword">new</span> AmqpConnectException(var14);</span><br><span class="line">        &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">if</span> (routingLookupKey != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                SimpleResourceHolder.unbind(<span class="hljs-keyword">this</span>.getRoutingConnectionFactory());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Channel channel = <span class="hljs-keyword">null</span>;</span><br><span class="line">        DirectMessageListenerContainer.SimpleConsumer consumer = <span class="hljs-keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            channel = connection.createChannel(<span class="hljs-keyword">this</span>.isChannelTransacted());</span><br><span class="line">            channel.basicQos(<span class="hljs-keyword">this</span>.getPrefetchCount());</span><br><span class="line">            consumer = <span class="hljs-keyword">new</span> DirectMessageListenerContainer.SimpleConsumer(connection, channel, queue);</span><br><span class="line">            channel.queueDeclarePassive(queue);</span><br><span class="line">          <span class="hljs-comment">//消费者消费消息的核心代码，借助channel来获取消息并利用反射来实例化消费者对象</span></span><br><span class="line">            consumer.consumerTag = channel.basicConsume(queue, <span class="hljs-keyword">this</span>.getAcknowledgeMode().isAutoAck(), <span class="hljs-keyword">this</span>.getConsumerTagStrategy() != <span class="hljs-keyword">null</span> ? <span class="hljs-keyword">this</span>.getConsumerTagStrategy().createConsumerTag(queue) : <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-keyword">this</span>.isNoLocal(), <span class="hljs-keyword">this</span>.isExclusive(), <span class="hljs-keyword">this</span>.getConsumerArguments(), consumer);</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (AmqpApplicationContextClosedException var16) &#123;</span><br><span class="line">            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> AmqpConnectException(var16);</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (AmqpConnectException | IOException var17) &#123;</span><br><span class="line">            RabbitUtils.closeChannel(channel);</span><br><span class="line">            RabbitUtils.closeConnection(connection);</span><br><span class="line">            <span class="hljs-keyword">if</span> (var17.getCause() <span class="hljs-keyword">instanceof</span> ShutdownSignalException &amp;&amp; var17.getCause().getMessage().contains(<span class="hljs-string">&quot;in exclusive use&quot;</span>)) &#123;</span><br><span class="line">                <span class="hljs-keyword">this</span>.getExclusiveConsumerExceptionLogger().log(<span class="hljs-keyword">this</span>.logger, <span class="hljs-string">&quot;Exclusive consumer failure&quot;</span>, var17.getCause());</span><br><span class="line">                <span class="hljs-keyword">this</span>.publishConsumerFailedEvent(<span class="hljs-string">&quot;Consumer raised exception, attempting restart&quot;</span>, <span class="hljs-keyword">false</span>, var17);</span><br><span class="line">            &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (var17.getCause() <span class="hljs-keyword">instanceof</span> ShutdownSignalException &amp;&amp; RabbitUtils.isPassiveDeclarationChannelClose((ShutdownSignalException)var17.getCause())) &#123;</span><br><span class="line">                <span class="hljs-keyword">this</span>.logger.error(<span class="hljs-string">&quot;Queue not present, scheduling consumer &quot;</span> + consumer + <span class="hljs-string">&quot; for restart&quot;</span>, var17);</span><br><span class="line">            &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.logger.isWarnEnabled()) &#123;</span><br><span class="line">                <span class="hljs-keyword">this</span>.logger.warn(<span class="hljs-string">&quot;basicConsume failed, scheduling consumer &quot;</span> + consumer + <span class="hljs-string">&quot; for restart&quot;</span>, var17);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="hljs-keyword">if</span> (consumer == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                <span class="hljs-keyword">this</span>.addConsumerToRestart(<span class="hljs-keyword">new</span> DirectMessageListenerContainer.SimpleConsumer((Connection)<span class="hljs-keyword">null</span>, (Channel)<span class="hljs-keyword">null</span>, queue));</span><br><span class="line">            &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">                <span class="hljs-keyword">this</span>.addConsumerToRestart(consumer);</span><br><span class="line">                consumer = <span class="hljs-keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">synchronized</span>(<span class="hljs-keyword">this</span>.consumersMonitor) &#123;</span><br><span class="line">            <span class="hljs-keyword">if</span> (consumer != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                <span class="hljs-keyword">this</span>.cancellationLock.add(consumer);</span><br><span class="line">                <span class="hljs-keyword">this</span>.consumers.add(consumer);</span><br><span class="line">                <span class="hljs-keyword">this</span>.consumersByQueue.add(queue, consumer);</span><br><span class="line">                <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.logger.isInfoEnabled()) &#123;</span><br><span class="line">                    <span class="hljs-keyword">this</span>.logger.info(consumer + <span class="hljs-string">&quot; started&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.getApplicationEventPublisher() != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                    <span class="hljs-keyword">this</span>.getApplicationEventPublisher().publishEvent(<span class="hljs-keyword">new</span> AsyncConsumerStartedEvent(<span class="hljs-keyword">this</span>, consumer));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<br>
+
+<p><strong><u>总结</u></strong></p>
+<p>DirectMessageListenerContainer利用线程池来管理channel线程，但每一个线程的底层消息消费逻辑与SimpleMessageListenerContainer相同，都是借助channel利用反射实现消费者实例化。</p>
+<p>SimpleMessageListenerContainer提供了以下特性，但DirectMessageListenerContainer不提供:</p>
+<ul>
+<li>txSize—使用SimpleMessageListenerContainer，您可以将其设置为控制事务中传递的消息数量和/或减少ack的数量，但这可能会导致失败后重复传递的数量增加。(与txSize和SimpleMessageListenerContainer一样，DirectMessageListenerContainer也有mesagesPerAck，可以用来减少ack，但不能用于事务—每个消息都在单独的事务中交付和打包)。</li>
+<li>maxconcurrentconsumer和consumer伸缩间隔/触发器—DirectMessageListenerContainer中没有自动伸缩;但是，它允许您以编程方式更改consumersPerQueue属性，并相应地调整使用者。</li>
+</ul>
+<p>然而，与SimpleMessageListenerContainer相比，DirectMessageListenerContainer有以下优点:</p>
+<ul>
+<li>在运行时添加和删除队列更有效;使用SimpleMessageListenerContainer，整个使用者线程重新启动(所有使用者取消并重新创建);对于DirectMessageListenerContainer，不受影响的使用者不会被取消。</li>
+<li>避免了RabbitMQ客户机线程和使用者线程之间的上下文切换。</li>
+<li>线程是跨使用者共享的，而不是为SimpleMessageListenerContainer中的每个使用者都有一个专用线程。但是，请参阅“线程和异步使用者”一节中有关连接工厂配置的重要说明。</li>
+</ul>
+<br>
+
+<br>
+
+<br>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?2f798e6b269c8a40f12bef25d7f1876d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<div style="height:260px; background-color:rgb(238,240,244); padding:10px;border-radius:10px;">
+    <p style="color:#f36c21;font:bold 16px/20px 'kaiTi';">
+      版权声明：本文为博主原创文章，欢迎转载，转载请注明作者、原文超链接，感谢各位看官!!!
+    </p>
+    <p>
+      <span style="font:bold 16px/20px 'kaiTi';">本文出自：</span><a href="https://monkeyGeek369.github.io">monkeyGeek</a> 
+    </p>
+    <p>
+      <span style="font:bold 16px/20px 'kaiTi';">座右铭：</span><span>生于忧患，死于安乐</span> 
+    </p>
+    <p>
+      <span style="font:16px/20px 'kaiTi';">欢迎志同道合的朋友一起交流、探讨！</span> 
+    </p>
+    <img style="height:auto; width:auto;flot:left;" src="../../../../image/monkey64.png"><span style="font:16px/20px 'kaiTi';flot:left;">   monkeyGeek</span>
+
+
+</div>
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link-link" href="/tags/mq/" rel="tag">mq</a>, <a class="has-link-grey -link-link" href="/tags/rabbitmq/" rel="tag">rabbitmq</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        <div class="social-share"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css">
+<script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="/images/alipay.jpg" alt="支付宝"></div>
+</a>
+
+                
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="/images/wechat.jpg" alt="微信"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2021/8/3/co_ch/">
+                <span class="level-item">rabbitmq中connection与channel</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.4.1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: 'ddd4811074fe59faa56c',
+        clientSecret: 'fb825479f2fcc898b38e240612a6c9eb45ff15d0',
+        id: 'b869d139f9ae993e1a6c4b8cbec5fead',
+        repo: 'monkeyGeek369.github.io',
+        owner: 'monkeyGeek369',
+        admin: "monkeyGeek369",
+        createIssueManually: false,
+        distractionFreeMode: false
+    })
+    gitalk.render('comment-container')
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    
+                        <img class="image is-128x128 has-mb-6" src="/images/monkeygeek.png" alt="monkeyGeek">
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        monkeyGeek
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        生于忧患，死于安乐。永远不要停止思考。
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>中国 上海</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        100
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        20
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        48
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/monkeyGeek369" target="_blank">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Github" href="https://github.com/monkeyGeek369">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Facebook" href="/">
+                
+                <i class="fab fa-facebook"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Twitter" href="/">
+                
+                <i class="fab fa-twitter"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Dribbble" href="/">
+                
+                <i class="fab fa-dribbble"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="RSS" href="/">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/UiPath/">
+            <span class="level-start">
+                <span class="level-item">UiPath</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/aboutme/">
+            <span class="level-start">
+                <span class="level-item">aboutme</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/activiti/">
+            <span class="level-start">
+                <span class="level-item">activiti</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">8</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/experienceShare/">
+            <span class="level-start">
+                <span class="level-item">experienceShare</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/git/">
+            <span class="level-start">
+                <span class="level-item">git</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/hexo/">
+            <span class="level-start">
+                <span class="level-item">hexo</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">10</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/java%E5%9F%BA%E7%A1%80/">
+            <span class="level-start">
+                <span class="level-item">java基础</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/mq/">
+            <span class="level-start">
+                <span class="level-item">mq</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">3</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/php%E8%AF%AD%E8%A8%80/">
+            <span class="level-start">
+                <span class="level-item">php语言</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84/">
+            <span class="level-start">
+                <span class="level-item">分布式架构</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E6%88%90%E9%95%BF/">
+            <span class="level-start">
+                <span class="level-item">成长</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">8</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E6%89%80%E6%84%9F/">
+            <span class="level-start">
+                <span class="level-item">所感</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">4</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">
+            <span class="level-start">
+                <span class="level-item">数据库</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/">
+            <span class="level-start">
+                <span class="level-item">标准与规范</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%90%86%E8%B4%A2/">
+            <span class="level-start">
+                <span class="level-item">理财</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%94%9F%E6%B4%BB/">
+            <span class="level-start">
+                <span class="level-item">生活</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%AE%97%E6%B3%95/">
+            <span class="level-start">
+                <span class="level-item">算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">3</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/">
+            <span class="level-start">
+                <span class="level-item">系统装机</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">
+            <span class="level-start">
+                <span class="level-item">网络协议</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">3</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E8%AF%BB%E4%B9%A6/">
+            <span class="level-start">
+                <span class="level-item">读书</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">9</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/BASE%E7%90%86%E8%AE%BA/" style="font-size: 10px;">BASE理论</a> <a href="/tags/CAP%E7%90%86%E8%AE%BA/" style="font-size: 10px;">CAP理论</a> <a href="/tags/List/" style="font-size: 10px;">List</a> <a href="/tags/RPA/" style="font-size: 20px;">RPA</a> <a href="/tags/RPA%E7%BB%84%E4%BB%B6%E5%BA%93/" style="font-size: 13.33px;">RPA组件库</a> <a href="/tags/Saga/" style="font-size: 10px;">Saga</a> <a href="/tags/Spring/" style="font-size: 14.44px;">Spring</a> <a href="/tags/UiPath/" style="font-size: 20px;">UiPath</a> <a href="/tags/XA%E8%A7%84%E8%8C%83/" style="font-size: 10px;">XA规范</a> <a href="/tags/activiti/" style="font-size: 16.67px;">activiti</a> <a href="/tags/annotation%E6%B3%A8%E8%A7%A3/" style="font-size: 14.44px;">annotation注解</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/experienceShare/" style="font-size: 10px;">experienceShare</a> <a href="/tags/git/" style="font-size: 14.44px;">git</a> <a href="/tags/github/" style="font-size: 12.22px;">github</a> <a href="/tags/hexo/" style="font-size: 18.89px;">hexo</a> <a href="/tags/janusGraph/" style="font-size: 12.22px;">janusGraph</a> <a href="/tags/java/" style="font-size: 18.89px;">java</a> <a href="/tags/java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 14.44px;">java8新特性</a> <a href="/tags/java%E6%97%B6%E9%97%B4%E6%93%8D%E4%BD%9C/" style="font-size: 10px;">java时间操作</a> <a href="/tags/java%E6%AF%94%E8%BE%83%E5%99%A8/" style="font-size: 10px;">java比较器</a> <a href="/tags/java%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">java语法基础</a> <a href="/tags/key/" style="font-size: 10px;">key</a> <a href="/tags/lambda/" style="font-size: 10px;">lambda</a> <a href="/tags/mq/" style="font-size: 12.22px;">mq</a> <a href="/tags/paxos/" style="font-size: 12.22px;">paxos</a> <a href="/tags/php%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">php基础</a> <a href="/tags/php%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">php语言</a> <a href="/tags/rabbitmq/" style="font-size: 12.22px;">rabbitmq</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 15.56px;">事务</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 15.56px;">分布式</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 12.22px;">分布式一致性</a> <a href="/tags/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 11.11px;">图数据库</a> <a href="/tags/%E6%88%90%E9%95%BF/" style="font-size: 11.11px;">成长</a> <a href="/tags/%E6%89%80%E6%84%9F/" style="font-size: 13.33px;">所感</a> <a href="/tags/%E6%8E%92%E5%BA%8F/" style="font-size: 11.11px;">排序</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 15.56px;">数据一致性</a> <a href="/tags/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/" style="font-size: 10px;">标准与规范</a> <a href="/tags/%E7%90%86%E8%B4%A2/" style="font-size: 11.11px;">理财</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 12.22px;">算法</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/" style="font-size: 10px;">系统装机</a> <a href="/tags/%E7%B4%A2%E5%BC%95/" style="font-size: 10px;">索引</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E4%B8%8E%E8%BF%9B%E7%A8%8B/" style="font-size: 10px;">线程与进程</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" style="font-size: 12.22px;">网络协议</a> <a href="/tags/%E8%A1%8C%E4%B8%9A/" style="font-size: 14.44px;">行业</a> <a href="/tags/%E8%AE%A4%E7%9F%A5/" style="font-size: 10px;">认知</a> <a href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/" style="font-size: 17.78px;">读后感</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/8/4/rab-sim-dir/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="rabbitmq中SimpleMessageListenerContainer与DirectMessageListenerContainer">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-04T08:14:14.000Z">2021-08-04</time></div>
+                    <a href="/2021/8/4/rab-sim-dir/" class="has-link-black-ter is-size-6">rabbitmq中SimpleMessageListenerContainer与DirectMessageListenerContainer</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/mq/">mq</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/8/3/co_ch/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="rabbitmq中connection与channel">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-03T09:31:40.000Z">2021-08-03</time></div>
+                    <a href="/2021/8/3/co_ch/" class="has-link-black-ter is-size-6">rabbitmq中connection与channel</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/mq/">mq</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/8/3/mq-backlog/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="rabbitmq消息积压解决思路">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-03T08:58:43.000Z">2021-08-03</time></div>
+                    <a href="/2021/8/3/mq-backlog/" class="has-link-black-ter is-size-6">rabbitmq消息积压解决思路</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/mq/">mq</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/6/29/index_fail/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="索引失效的几种场景">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-06-29T11:23:59.000Z">2021-06-29</time></div>
+                    <a href="/2021/6/29/index_fail/" class="has-link-black-ter is-size-6">索引失效的几种场景</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/6/18/graph-used/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="图数据库应用">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-06-18T06:47:37.000Z">2021-06-18</time></div>
+                    <a href="/2021/6/18/graph-used/" class="has-link-black-ter is-size-6">图数据库应用</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">23</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">16</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/BASE%E7%90%86%E8%AE%BA/">
+                        <span class="tag">BASE理论</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CAP%E7%90%86%E8%AE%BA/">
+                        <span class="tag">CAP理论</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/List/">
+                        <span class="tag">List</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/RPA/">
+                        <span class="tag">RPA</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/RPA%E7%BB%84%E4%BB%B6%E5%BA%93/">
+                        <span class="tag">RPA组件库</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Saga/">
+                        <span class="tag">Saga</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring/">
+                        <span class="tag">Spring</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UiPath/">
+                        <span class="tag">UiPath</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/XA%E8%A7%84%E8%8C%83/">
+                        <span class="tag">XA规范</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/activiti/">
+                        <span class="tag">activiti</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/annotation%E6%B3%A8%E8%A7%A3/">
+                        <span class="tag">annotation注解</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/blog/">
+                        <span class="tag">blog</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/experienceShare/">
+                        <span class="tag">experienceShare</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/git/">
+                        <span class="tag">git</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/github/">
+                        <span class="tag">github</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/hexo/">
+                        <span class="tag">hexo</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/janusGraph/">
+                        <span class="tag">janusGraph</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java/">
+                        <span class="tag">java</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java8%E6%96%B0%E7%89%B9%E6%80%A7/">
+                        <span class="tag">java8新特性</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java%E6%97%B6%E9%97%B4%E6%93%8D%E4%BD%9C/">
+                        <span class="tag">java时间操作</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java%E6%AF%94%E8%BE%83%E5%99%A8/">
+                        <span class="tag">java比较器</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/">
+                        <span class="tag">java语法基础</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/key/">
+                        <span class="tag">key</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/lambda/">
+                        <span class="tag">lambda</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/mq/">
+                        <span class="tag">mq</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/paxos/">
+                        <span class="tag">paxos</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/php%E5%9F%BA%E7%A1%80/">
+                        <span class="tag">php基础</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/php%E8%AF%AD%E8%A8%80/">
+                        <span class="tag">php语言</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/rabbitmq/">
+                        <span class="tag">rabbitmq</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ssh/">
+                        <span class="tag">ssh</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E4%BA%8B%E5%8A%A1/">
+                        <span class="tag">事务</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">
+                        <span class="tag">分布式</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/">
+                        <span class="tag">分布式一致性</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/">
+                        <span class="tag">图数据库</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%88%90%E9%95%BF/">
+                        <span class="tag">成长</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%89%80%E6%84%9F/">
+                        <span class="tag">所感</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%8E%92%E5%BA%8F/">
+                        <span class="tag">排序</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/">
+                        <span class="tag">数据一致性</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/">
+                        <span class="tag">标准与规范</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%90%86%E8%B4%A2/">
+                        <span class="tag">理财</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="tag">算法</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/">
+                        <span class="tag">系统装机</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%B4%A2%E5%BC%95/">
+                        <span class="tag">索引</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%BA%BF%E7%A8%8B%E4%B8%8E%E8%BF%9B%E7%A8%8B/">
+                        <span class="tag">线程与进程</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">
+                        <span class="tag">网络协议</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%A1%8C%E4%B8%9A/">
+                        <span class="tag">行业</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%AE%A4%E7%9F%A5/">
+                        <span class="tag">认知</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/">
+                        <span class="tag">读后感</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2021/8/4/rab-sim-dir/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="rabbitmq中SimpleMessageListenerContainer与DirectMessageListenerContainer">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-04T08:14:14.000Z">2021-08-04</time></div>
+                    <a href="/2021/8/4/rab-sim-dir/" class="has-link-black-ter is-size-6">rabbitmq中SimpleMessageListenerContainer与DirectMessageListenerContainer</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/mq/">mq</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/8/3/co_ch/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="rabbitmq中connection与channel">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-03T09:31:40.000Z">2021-08-03</time></div>
+                    <a href="/2021/8/3/co_ch/" class="has-link-black-ter is-size-6">rabbitmq中connection与channel</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/mq/">mq</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/8/3/mq-backlog/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="rabbitmq消息积压解决思路">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-08-03T08:58:43.000Z">2021-08-03</time></div>
+                    <a href="/2021/8/3/mq-backlog/" class="has-link-black-ter is-size-6">rabbitmq消息积压解决思路</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/mq/">mq</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/6/29/index_fail/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="索引失效的几种场景">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-06-29T11:23:59.000Z">2021-06-29</time></div>
+                    <a href="/2021/6/29/index_fail/" class="has-link-black-ter is-size-6">索引失效的几种场景</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2021/6/18/graph-used/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="图数据库应用">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-06-18T06:47:37.000Z">2021-06-18</time></div>
+                    <a href="/2021/6/18/graph-used/" class="has-link-black-ter is-size-6">图数据库应用</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">23</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">16</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/BASE%E7%90%86%E8%AE%BA/">
+                        <span class="tag">BASE理论</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CAP%E7%90%86%E8%AE%BA/">
+                        <span class="tag">CAP理论</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/List/">
+                        <span class="tag">List</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/RPA/">
+                        <span class="tag">RPA</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/RPA%E7%BB%84%E4%BB%B6%E5%BA%93/">
+                        <span class="tag">RPA组件库</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Saga/">
+                        <span class="tag">Saga</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring/">
+                        <span class="tag">Spring</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UiPath/">
+                        <span class="tag">UiPath</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/XA%E8%A7%84%E8%8C%83/">
+                        <span class="tag">XA规范</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/activiti/">
+                        <span class="tag">activiti</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/annotation%E6%B3%A8%E8%A7%A3/">
+                        <span class="tag">annotation注解</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/blog/">
+                        <span class="tag">blog</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/experienceShare/">
+                        <span class="tag">experienceShare</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/git/">
+                        <span class="tag">git</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/github/">
+                        <span class="tag">github</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/hexo/">
+                        <span class="tag">hexo</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/janusGraph/">
+                        <span class="tag">janusGraph</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java/">
+                        <span class="tag">java</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java8%E6%96%B0%E7%89%B9%E6%80%A7/">
+                        <span class="tag">java8新特性</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java%E6%97%B6%E9%97%B4%E6%93%8D%E4%BD%9C/">
+                        <span class="tag">java时间操作</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java%E6%AF%94%E8%BE%83%E5%99%A8/">
+                        <span class="tag">java比较器</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/">
+                        <span class="tag">java语法基础</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/key/">
+                        <span class="tag">key</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/lambda/">
+                        <span class="tag">lambda</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/mq/">
+                        <span class="tag">mq</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/paxos/">
+                        <span class="tag">paxos</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/php%E5%9F%BA%E7%A1%80/">
+                        <span class="tag">php基础</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/php%E8%AF%AD%E8%A8%80/">
+                        <span class="tag">php语言</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/rabbitmq/">
+                        <span class="tag">rabbitmq</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ssh/">
+                        <span class="tag">ssh</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E4%BA%8B%E5%8A%A1/">
+                        <span class="tag">事务</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">
+                        <span class="tag">分布式</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/">
+                        <span class="tag">分布式一致性</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/">
+                        <span class="tag">图数据库</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%88%90%E9%95%BF/">
+                        <span class="tag">成长</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%89%80%E6%84%9F/">
+                        <span class="tag">所感</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%8E%92%E5%BA%8F/">
+                        <span class="tag">排序</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/">
+                        <span class="tag">数据一致性</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/">
+                        <span class="tag">标准与规范</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%90%86%E8%B4%A2/">
+                        <span class="tag">理财</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="tag">算法</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/">
+                        <span class="tag">系统装机</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%B4%A2%E5%BC%95/">
+                        <span class="tag">索引</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%BA%BF%E7%A8%8B%E4%B8%8E%E8%BF%9B%E7%A8%8B/">
+                        <span class="tag">线程与进程</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">
+                        <span class="tag">网络协议</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%A1%8C%E4%B8%9A/">
+                        <span class="tag">行业</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%AE%A4%E7%9F%A5/">
+                        <span class="tag">认知</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/">
+                        <span class="tag">读后感</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/monkeygeek.svg" alt="rabbitmq中SimpleMessageListenerContainer与DirectMessageListenerContainer" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2021 monkeyGeek&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="https://github.com/monkeyGeek369">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

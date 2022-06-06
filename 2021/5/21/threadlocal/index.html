@@ -7,19 +7,19 @@
 
 
 
-    <meta name="description" content="ThreadLocal是什么 ThreadLocal是线程本地副本变量工具类。">
+    <meta name="description" content="ThreadLocal是什么ThreadLocal是线程本地副本变量工具类。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ThreadLocal详解">
 <meta property="og:url" content="https://monkeygeek369.github.io/2021/5/21/threadlocal/index.html">
 <meta property="og:site_name" content="monkeyGeek">
-<meta property="og:description" content="ThreadLocal是什么 ThreadLocal是线程本地副本变量工具类。">
+<meta property="og:description" content="ThreadLocal是什么ThreadLocal是线程本地副本变量工具类。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://monkeygeek369.github.io/images/og_image.png">
 <meta property="article:published_time" content="2021-05-21T12:12:34.000Z">
 <meta property="article:modified_time" content="2021-05-21T12:12:34.000Z">
 <meta property="article:author" content="monkeyGeek">
-<meta property="article:tag" content="面试">
 <meta property="article:tag" content="java">
+<meta property="article:tag" content="面试">
 <meta property="article:tag" content="线程与进程">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://monkeygeek369.github.io/images/og_image.png">
@@ -165,7 +165,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    2 分钟 读完 (大约 302 个字)
+                    13 分钟 读完 (大约 1979 个字)
                 </span>
                 
                 
@@ -178,18 +178,62 @@
             
         </h1>
         <div class="content">
-            <p><strong>ThreadLocal是什么</strong></p>
-<p>ThreadLocal是线程本地副本变量工具类。<a id="more"></a>主要用于将私有线程和该线程存放的副本对象做一个映射，各个线程之间的变量互不干扰，在高并发场景下，可以实现无状态的调用，特别适用于各个线程依赖不通的变量值完成操作的场景。</p>
+            <h1 id="ThreadLocal是什么"><a href="#ThreadLocal是什么" class="headerlink" title="ThreadLocal是什么"></a>ThreadLocal是什么</h1><p>ThreadLocal是线程本地副本变量工具类。<a id="more"></a>主要用于将私有线程和该线程存放的副本对象做一个映射，各个线程之间的变量互不干扰，在高并发场景下，可以实现无状态的调用，特别适用于各个线程依赖不同的变量值完成操作的场景。</p>
+<p>基本使用如下：</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">//在自定义类中创建ThreadLocal对象，EngineContext为我们自定义的Value对象类</span></span><br><span class="line"><span class="hljs-comment">//java是多线程的，父类初始化后，内部定义的ThreadLocal对象即在本线程内起效</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ThreadLocalTest</span></span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> ThreadLocal&lt;testContext&gt; CONTEXT_HOLDER = <span class="hljs-keyword">new</span> ThreadLocal&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">initalize</span><span class="hljs-params">(testContext context)</span> </span>&#123;</span><br><span class="line">        CONTEXT_HOLDER.set(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">clean</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        CONTEXT_HOLDER.remove();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> testContext <span class="hljs-title">get</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> CONTEXT_HOLDER.get();</span><br><span class="line">    &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <br>
 
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">//在自定义类中创建ThreadLocal对象，EngineContext为我们自定义的Value对象类</span></span><br><span class="line"><span class="hljs-comment">//java是多线程的，父类初始化后，内部定义的ThreadLocal对象即在本线程内起效</span></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> ThreadLocal&lt;EngineContext&gt; CONTEXT_HOLDER = <span class="hljs-keyword">new</span> ThreadLocal&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">initalize</span><span class="hljs-params">(EngineContext context)</span> </span>&#123;</span><br><span class="line">        CONTEXT_HOLDER.set(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">clean</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        CONTEXT_HOLDER.remove();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> EngineContext <span class="hljs-title">get</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> CONTEXT_HOLDER.get();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="ThreadLocal数据结构"><a href="#ThreadLocal数据结构" class="headerlink" title="ThreadLocal数据结构"></a>ThreadLocal数据结构</h1><p>先看线程内部变量，线程中本身就有threadLocals与inheritableThreadLocals对象，两者都是ThreadLocalMap类型，主要目的是存放属于本线程的ThreadLocal值对象。这也是线程间做到数据隔离的关键。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Thread</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Runnable</span> </span>&#123;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">/* ThreadLocal values pertaining to this thread. This map is maintained</span></span><br><span class="line"><span class="hljs-comment">     * by the ThreadLocal class. </span></span><br><span class="line"><span class="hljs-comment">     * 与此线程相关的ThreadLocal值。由ThreadLocal类维护*/</span></span><br><span class="line">    ThreadLocal.ThreadLocalMap threadLocals = <span class="hljs-keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">/*</span></span><br><span class="line"><span class="hljs-comment">     * InheritableThreadLocal values pertaining to this thread. This map is</span></span><br><span class="line"><span class="hljs-comment">     * maintained by the InheritableThreadLocal class.</span></span><br><span class="line"><span class="hljs-comment">     * 与此线程相关的可继承父类的ThreadLocal值。由InheritableThreadLocal类维护</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    ThreadLocal.ThreadLocalMap inheritableThreadLocals = <span class="hljs-keyword">null</span>;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以threadLocals为例，那么线程中的threadLocals是如何被赋值和获取的呢？</p>
+<p>ThreadLocalMap是ThreadLocal工具类的内部类，ThreadLocalMap中有get、set方法用于操作。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> T <span class="hljs-title">get</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">  	<span class="hljs-comment">//获取当前线程</span></span><br><span class="line">    Thread t = Thread.currentThread();</span><br><span class="line">  	<span class="hljs-comment">//获取当前线程中的threadLocals</span></span><br><span class="line">    ThreadLocalMap map = getMap(t);</span><br><span class="line">    <span class="hljs-keyword">if</span> (map != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">      	<span class="hljs-comment">//从threadLocals中取值Entry，注意key为ThreadLocal对象本身</span></span><br><span class="line">        ThreadLocalMap.Entry e = map.getEntry(<span class="hljs-keyword">this</span>);</span><br><span class="line">        <span class="hljs-keyword">if</span> (e != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">            <span class="hljs-meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">            T result = (T)e.value;</span><br><span class="line">            <span class="hljs-keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-keyword">return</span> setInitialValue();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">set</span><span class="hljs-params">(T value)</span> </span>&#123;</span><br><span class="line">  			<span class="hljs-comment">//获取当前线程</span></span><br><span class="line">        Thread t = Thread.currentThread();</span><br><span class="line">  			<span class="hljs-comment">//获取当前线程中的threadLocals</span></span><br><span class="line">        ThreadLocalMap map = getMap(t);</span><br><span class="line">        <span class="hljs-keyword">if</span> (map != <span class="hljs-keyword">null</span>)</span><br><span class="line">          	<span class="hljs-comment">//赋值：注意key为ThreadLocal对象本身</span></span><br><span class="line">            map.set(<span class="hljs-keyword">this</span>, value);</span><br><span class="line">        <span class="hljs-keyword">else</span></span><br><span class="line">            createMap(t, value);</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>总结：</p>
+<ul>
+<li>每一个Thread内都存在独立的ThreadLocalMap对象</li>
+<li>ThreadLocalMap对象是key为ThreadLocal的map</li>
+<li>Thread内的ThreadLocalMap被ThreadLocal进行统一管理，实现get/set等功能</li>
+</ul>
+<br>
 
+<h1 id="ThreadLocalMap数据结构"><a href="#ThreadLocalMap数据结构" class="headerlink" title="ThreadLocalMap数据结构"></a>ThreadLocalMap数据结构</h1><figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ThreadLocalMap</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Entry</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">WeakReference</span>&lt;<span class="hljs-title">ThreadLocal</span>&lt;?&gt;&gt; </span>&#123;</span><br><span class="line">        <span class="hljs-comment">/** The value associated with this ThreadLocal. */</span></span><br><span class="line">        Object value;</span><br><span class="line"></span><br><span class="line">        Entry(ThreadLocal&lt;?&gt; k, Object v) &#123;</span><br><span class="line">            <span class="hljs-keyword">super</span>(k);</span><br><span class="line">            value = v;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总结：</p>
+<ul>
+<li>ThreadLocalMap是由自己定义的Entry组成</li>
+<li>Entry为key-value键值对对象，其中key为ThreadLocal本身</li>
+<li>key是弱引用的，会在下次GC时被回收</li>
+</ul>
+<br>
 
+<h1 id="ThreadLocalMap一致性原理"><a href="#ThreadLocalMap一致性原理" class="headerlink" title="ThreadLocalMap一致性原理"></a>ThreadLocalMap一致性原理</h1><p>ThreadLocalMap采用线性探测的方式寻找位置，就是根据初始key的hashcode值确定元素在table数组中的位置，如果发现这个位置上已经有其他key值的元素被占用，则利用固定的算法寻找一定步长的下个位置，依次判断，直至找到能够存放的位置。</p>
+<p>ThreadLocalMap解决Hash冲突的方式就是简单的步长加1或减1，寻找下一个相邻的位置。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">set</span><span class="hljs-params">(ThreadLocal&lt;?&gt; key, Object value)</span> </span>&#123;</span><br><span class="line">    Entry[] tab = table;</span><br><span class="line">    <span class="hljs-keyword">int</span> len = tab.length;</span><br><span class="line">  	<span class="hljs-comment">//获取数组下标</span></span><br><span class="line">    <span class="hljs-keyword">int</span> i = key.threadLocalHashCode &amp; (len-<span class="hljs-number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">for</span> (Entry e = tab[i];</span><br><span class="line">         e != <span class="hljs-keyword">null</span>;</span><br><span class="line">         e = tab[i = nextIndex(i, len)]) &#123;</span><br><span class="line">        ThreadLocal&lt;?&gt; k = e.get();</span><br><span class="line"></span><br><span class="line">      	<span class="hljs-comment">//如果当前遍历的ThreadLocal与传入的ThreadLocal一致，则覆盖value值</span></span><br><span class="line">        <span class="hljs-keyword">if</span> (k == key) &#123;</span><br><span class="line">            e.value = value;</span><br><span class="line">            <span class="hljs-keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">      	<span class="hljs-comment">//如果遍历到的位置key为null，证明此处没有对象，则创建entry放入该位置</span></span><br><span class="line">        <span class="hljs-keyword">if</span> (k == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">            replaceStaleEntry(key, value, i);</span><br><span class="line">            <span class="hljs-keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    tab[i] = <span class="hljs-keyword">new</span> Entry(key, value);</span><br><span class="line">    <span class="hljs-keyword">int</span> sz = ++size;</span><br><span class="line">    <span class="hljs-keyword">if</span> (!cleanSomeSlots(i, sz) &amp;&amp; sz &gt;= threshold)</span><br><span class="line">        rehash();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>简单来说，set 方法会先计算该 ThreadLocal 的数据下标，如果该位置上为空，则新建 Entry 键值对并插入；如果该位置有数据且 key 一致，则覆盖原有 value；如果 for 循环一直找不到对应位置，在循环外直接给 tab[i] 赋新得 Entry</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">private</span> Entry <span class="hljs-title">getEntry</span><span class="hljs-params">(ThreadLocal&lt;?&gt; key)</span> </span>&#123;</span><br><span class="line">  	<span class="hljs-comment">//计算出下标</span></span><br><span class="line">    <span class="hljs-keyword">int</span> i = key.threadLocalHashCode &amp; (table.length - <span class="hljs-number">1</span>);</span><br><span class="line">    Entry e = table[i];</span><br><span class="line">    <span class="hljs-keyword">if</span> (e != <span class="hljs-keyword">null</span> &amp;&amp; e.get() == key)</span><br><span class="line">      	<span class="hljs-comment">//匹配到相同的ThreadLocal</span></span><br><span class="line">        <span class="hljs-keyword">return</span> e;</span><br><span class="line">    <span class="hljs-keyword">else</span></span><br><span class="line">      	<span class="hljs-comment">//没有匹配到相同的ThreadLocal</span></span><br><span class="line">        <span class="hljs-keyword">return</span> getEntryAfterMiss(key, i, e);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">private</span> Entry <span class="hljs-title">getEntryAfterMiss</span><span class="hljs-params">(ThreadLocal&lt;?&gt; key, <span class="hljs-keyword">int</span> i, Entry e)</span> </span>&#123;</span><br><span class="line">    Entry[] tab = table;</span><br><span class="line">    <span class="hljs-keyword">int</span> len = tab.length;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">while</span> (e != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">        ThreadLocal&lt;?&gt; k = e.get();</span><br><span class="line">      </span><br><span class="line">      	<span class="hljs-comment">//找到相同的就返回，找不到就继续遍历下一个，都找不到就返回null</span></span><br><span class="line">        <span class="hljs-keyword">if</span> (k == key)</span><br><span class="line">            <span class="hljs-keyword">return</span> e;</span><br><span class="line">        <span class="hljs-keyword">if</span> (k == <span class="hljs-keyword">null</span>)</span><br><span class="line">            expungeStaleEntry(i);</span><br><span class="line">        <span class="hljs-keyword">else</span></span><br><span class="line">            i = nextIndex(i, len);</span><br><span class="line">        e = tab[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>get方法也是很简单找到相同的就返回，找不到就继续遍历下一个，都找不到就返回null</p>
+<br>
 
+<h1 id="内存泄漏问题"><a href="#内存泄漏问题" class="headerlink" title="内存泄漏问题"></a>内存泄漏问题</h1><p>由于ThreadLocalMap的key是弱引用，而Value是强引用。这就导致了一个问题，ThreadLocal在没有外部对象强引用时，发生GC时弱引用Key会被回收，而Value不会回收，如果创建ThreadLocal的线程一直持续运行，那么这个Entry对象中的value就有可能一直得不到回收，发生内存泄露。</p>
+<p>ThreadLocalMap 实现中已经考虑了这种情况，在调用 <code>set()</code>、<code>get()</code>、<code>remove()</code> 方法的时候，会清理掉 key 为 null 的记录。使用完 ThreadLocal 方法后 最好手动调用<code>remove()</code>方法</p>
+<br>
 
+<h1 id="为什么使用弱键？"><a href="#为什么使用弱键？" class="headerlink" title="为什么使用弱键？"></a>为什么使用弱键？</h1><p>下面我们分两种情况讨论：</p>
+<p><strong>（1）key 使用强引用</strong>：引用的ThreadLocal的对象被回收了，但是ThreadLocalMap还持有ThreadLocal的强引用，如果没有手动删除，ThreadLocal不会被回收，导致Entry内存泄漏。</p>
+<p><strong>（2）key 使用弱引用</strong>：引用的ThreadLocal的对象被回收了，由于ThreadLocalMap持有ThreadLocal的弱引用，即使没有手动删除，ThreadLocal也会被回收。value在下一次ThreadLocalMap调用set、get、remove的时候会被清除。</p>
+<p>比较两种情况，我们可以发现：由于ThreadLocalMap的生命周期跟Thread一样长，如果都没有手动删除对应key，都会导致内存泄漏，但是使用弱引用可以多一层保障<strong>：</strong>弱引用ThreadLocal不会内存泄漏，对应的value在下一次ThreadLocalMap调用set、get、remove的时候会被清除。</p>
+<p>因此，ThreadLocal内存泄漏的根源是：由于ThreadLocalMap的生命周期跟Thread一样长，如果没有手动删除对应key就会导致内存泄漏，而不是因为弱引用。</p>
+<br>
 
+<h1 id="如何实现线程资源共享"><a href="#如何实现线程资源共享" class="headerlink" title="如何实现线程资源共享"></a>如何实现线程资源共享</h1><p>使用 InheritableThreadLocal 类可以实现多个线程访问 ThreadLocal 的值，我们在主线程中创建一个 InheritableThreadLocal 的实例，然后在子线程中得到这个 InheritableThreadLocal 实例设置的值。<br>使用ThreadLocal threadLocal = new InheritableThreadLocal();即可</p>
+<br>
 
-
+<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><ul>
+<li>一个线程有一个ThreadLocalMap</li>
+<li>一个线程可以有多个ThreadLocal即ThreadLocalMap存放多个ThreadLocal</li>
+<li>ThreadLocal内部的ThreadLocalMap键为弱引用，会有内存泄漏的风险。</li>
+<li>ThreadLocal仅仅是工具类，可以将其理解为list、map等集合类（特殊的是其只能存放单个对象），ThreadLocal对象的创建可以是自定义线程类内部，也可也是其它非线程类内部，只要某句代码使用ThreadLocal对象的get、set等方法，其实此时该工具类自动会同当前进程相管理，讲变量副本关联到当前线程Thread内置的ThreadLocalMap内以实现变量隔离效果。</li>
+</ul>
+<br>
 
 <br>
 
@@ -364,7 +408,7 @@ var _hmt = _hmt || [];
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        113
+                        118
                     </p>
                 </div>
             </div>
@@ -505,7 +549,7 @@ var _hmt = _hmt || [];
                 <span class="level-item">java基础</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">19</span>
+                <span class="level-item tag">20</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/mq/">
@@ -561,7 +605,7 @@ var _hmt = _hmt || [];
                 <span class="level-item">数据库</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">6</span>
+                <span class="level-item tag">8</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/">
@@ -625,7 +669,7 @@ var _hmt = _hmt || [];
                 <span class="level-item">职业</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">1</span>
+                <span class="level-item tag">2</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/%E8%AF%BB%E4%B9%A6/">
@@ -641,7 +685,7 @@ var _hmt = _hmt || [];
                 <span class="level-item">软件技术</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">1</span>
+                <span class="level-item tag">2</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/">
@@ -663,7 +707,7 @@ var _hmt = _hmt || [];
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/BASE%E7%90%86%E8%AE%BA/" style="font-size: 10px;">BASE理论</a> <a href="/tags/CAP%E7%90%86%E8%AE%BA/" style="font-size: 10px;">CAP理论</a> <a href="/tags/List/" style="font-size: 10px;">List</a> <a href="/tags/RPA/" style="font-size: 16.36px;">RPA</a> <a href="/tags/RPA%E7%BB%84%E4%BB%B6%E5%BA%93/" style="font-size: 10px;">RPA组件库</a> <a href="/tags/Saga/" style="font-size: 10px;">Saga</a> <a href="/tags/Spring/" style="font-size: 13.64px;">Spring</a> <a href="/tags/UiPath/" style="font-size: 14.55px;">UiPath</a> <a href="/tags/XA%E8%A7%84%E8%8C%83/" style="font-size: 10px;">XA规范</a> <a href="/tags/activiti/" style="font-size: 16.36px;">activiti</a> <a href="/tags/annotation%E6%B3%A8%E8%A7%A3/" style="font-size: 13.64px;">annotation注解</a> <a href="/tags/apollo/" style="font-size: 10px;">apollo</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/experienceShare/" style="font-size: 10px;">experienceShare</a> <a href="/tags/git/" style="font-size: 13.64px;">git</a> <a href="/tags/github/" style="font-size: 11.82px;">github</a> <a href="/tags/hexo/" style="font-size: 18.18px;">hexo</a> <a href="/tags/janusGraph/" style="font-size: 11.82px;">janusGraph</a> <a href="/tags/java/" style="font-size: 19.09px;">java</a> <a href="/tags/java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 13.64px;">java8新特性</a> <a href="/tags/java%E6%97%B6%E9%97%B4%E6%93%8D%E4%BD%9C/" style="font-size: 10px;">java时间操作</a> <a href="/tags/java%E6%AF%94%E8%BE%83%E5%99%A8/" style="font-size: 10px;">java比较器</a> <a href="/tags/java%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">java语法基础</a> <a href="/tags/key/" style="font-size: 10px;">key</a> <a href="/tags/lambda/" style="font-size: 10px;">lambda</a> <a href="/tags/mq/" style="font-size: 13.64px;">mq</a> <a href="/tags/paxos/" style="font-size: 11.82px;">paxos</a> <a href="/tags/php%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">php基础</a> <a href="/tags/php%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">php语言</a> <a href="/tags/rabbitmq/" style="font-size: 13.64px;">rabbitmq</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 14.55px;">事务</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 14.55px;">分布式</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 11.82px;">分布式一致性</a> <a href="/tags/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 10.91px;">图数据库</a> <a href="/tags/%E6%88%90%E9%95%BF/" style="font-size: 10px;">成长</a> <a href="/tags/%E6%89%80%E6%84%9F/" style="font-size: 15.45px;">所感</a> <a href="/tags/%E6%8E%92%E5%BA%8F/" style="font-size: 10.91px;">排序</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 14.55px;">数据一致性</a> <a href="/tags/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/" style="font-size: 10px;">标准与规范</a> <a href="/tags/%E7%90%86%E8%B4%A2/" style="font-size: 10.91px;">理财</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 12.73px;">算法</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/" style="font-size: 10px;">系统装机</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E4%B8%8E%E8%BF%9B%E7%A8%8B/" style="font-size: 10px;">线程与进程</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" style="font-size: 11.82px;">网络协议</a> <a href="/tags/%E8%81%8C%E4%B8%9A%E5%8F%91%E5%B1%95/" style="font-size: 17.27px;">职业发展</a> <a href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/" style="font-size: 17.27px;">读后感</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 20px;">面试</a>
+        <a href="/tags/BASE%E7%90%86%E8%AE%BA/" style="font-size: 10px;">BASE理论</a> <a href="/tags/CAP%E7%90%86%E8%AE%BA/" style="font-size: 10px;">CAP理论</a> <a href="/tags/List/" style="font-size: 10px;">List</a> <a href="/tags/RPA/" style="font-size: 16.36px;">RPA</a> <a href="/tags/RPA%E7%BB%84%E4%BB%B6%E5%BA%93/" style="font-size: 10px;">RPA组件库</a> <a href="/tags/Saga/" style="font-size: 10px;">Saga</a> <a href="/tags/Spring/" style="font-size: 13.64px;">Spring</a> <a href="/tags/UiPath/" style="font-size: 14.55px;">UiPath</a> <a href="/tags/XA%E8%A7%84%E8%8C%83/" style="font-size: 10px;">XA规范</a> <a href="/tags/activiti/" style="font-size: 16.36px;">activiti</a> <a href="/tags/annotation%E6%B3%A8%E8%A7%A3/" style="font-size: 13.64px;">annotation注解</a> <a href="/tags/apollo/" style="font-size: 10px;">apollo</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/experienceShare/" style="font-size: 10px;">experienceShare</a> <a href="/tags/git/" style="font-size: 13.64px;">git</a> <a href="/tags/github/" style="font-size: 11.82px;">github</a> <a href="/tags/hexo/" style="font-size: 18.18px;">hexo</a> <a href="/tags/janusGraph/" style="font-size: 11.82px;">janusGraph</a> <a href="/tags/java/" style="font-size: 19.09px;">java</a> <a href="/tags/java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 13.64px;">java8新特性</a> <a href="/tags/java%E6%97%B6%E9%97%B4%E6%93%8D%E4%BD%9C/" style="font-size: 10px;">java时间操作</a> <a href="/tags/java%E6%AF%94%E8%BE%83%E5%99%A8/" style="font-size: 10px;">java比较器</a> <a href="/tags/java%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">java语法基础</a> <a href="/tags/key/" style="font-size: 10px;">key</a> <a href="/tags/lambda/" style="font-size: 10px;">lambda</a> <a href="/tags/mq/" style="font-size: 13.64px;">mq</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/paxos/" style="font-size: 11.82px;">paxos</a> <a href="/tags/php%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">php基础</a> <a href="/tags/php%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">php语言</a> <a href="/tags/rabbitmq/" style="font-size: 13.64px;">rabbitmq</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 14.55px;">事务</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 14.55px;">分布式</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 11.82px;">分布式一致性</a> <a href="/tags/%E6%88%90%E9%95%BF/" style="font-size: 10px;">成长</a> <a href="/tags/%E6%89%80%E6%84%9F/" style="font-size: 15.45px;">所感</a> <a href="/tags/%E6%8E%92%E5%BA%8F/" style="font-size: 10.91px;">排序</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 14.55px;">数据一致性</a> <a href="/tags/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/" style="font-size: 10px;">标准与规范</a> <a href="/tags/%E7%90%86%E8%B4%A2/" style="font-size: 10.91px;">理财</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 12.73px;">算法</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/" style="font-size: 10px;">系统装机</a> <a href="/tags/%E7%BA%BF%E7%A8%8B%E4%B8%8E%E8%BF%9B%E7%A8%8B/" style="font-size: 10px;">线程与进程</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" style="font-size: 11.82px;">网络协议</a> <a href="/tags/%E8%81%8C%E4%B8%9A%E5%8F%91%E5%B1%95/" style="font-size: 17.27px;">职业发展</a> <a href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/" style="font-size: 17.27px;">读后感</a> <a href="/tags/%E9%94%81/" style="font-size: 10px;">锁</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 20px;">面试</a>
     </div>
 </div>
 
@@ -680,16 +724,16 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2022/5/18/sql-optimize/" class="media-left">
+            <a href="/2022/6/5/mysql-index/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SQL优化">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql数据库索引">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-05-18T14:58:43.000Z">2022-05-18</time></div>
-                    <a href="/2022/5/18/sql-optimize/" class="has-link-black-ter is-size-6">SQL优化</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-06-05T15:31:56.000Z">2022-06-05</time></div>
+                    <a href="/2022/6/5/mysql-index/" class="has-link-black-ter is-size-6">mysql数据库索引</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
                     </p>
@@ -699,18 +743,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2022/5/15/manage_exp/" class="media-left">
+            <a href="/2022/6/2/transaction-isolation/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="管理心得">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="事务的隔离级别">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-05-15T15:39:34.000Z">2022-05-15</time></div>
-                    <a href="/2022/5/15/manage_exp/" class="has-link-black-ter is-size-6">管理心得</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-06-02T01:48:06.000Z">2022-06-02</time></div>
+                    <a href="/2022/6/2/transaction-isolation/" class="has-link-black-ter is-size-6">事务的隔离级别</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E7%AE%A1%E7%90%86/">管理</a>
+                        <a class="has-link-grey -link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
                     </p>
                 </div>
             </div>
@@ -718,16 +762,16 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2022/5/15/com_tech_list/" class="media-left">
+            <a href="/2022/6/2/idempotent/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="常见技术框架清单">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="幂等性">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-05-15T15:39:34.000Z">2022-05-15</time></div>
-                    <a href="/2022/5/15/com_tech_list/" class="has-link-black-ter is-size-6">常见技术框架清单</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-06-02T01:23:04.000Z">2022-06-02</time></div>
+                    <a href="/2022/6/2/idempotent/" class="has-link-black-ter is-size-6">幂等性</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/%E8%BD%AF%E4%BB%B6%E6%8A%80%E6%9C%AF/">软件技术</a>
                     </p>
@@ -737,16 +781,16 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2022/5/3/interview/" class="media-left">
+            <a href="/2022/5/29/work-think/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="面试方案">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="工作小感悟">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-05-03T15:39:34.000Z">2022-05-03</time></div>
-                    <a href="/2022/5/3/interview/" class="has-link-black-ter is-size-6">面试方案</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-05-29T05:15:29.000Z">2022-05-29</time></div>
+                    <a href="/2022/5/29/work-think/" class="has-link-black-ter is-size-6">工作小感悟</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/%E8%81%8C%E4%B8%9A/">职业</a>
                     </p>
@@ -756,18 +800,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2022/4/9/famliy-insurance/" class="media-left">
+            <a href="/2022/5/28/thread-pool/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="家庭保险基础知识">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="线程池">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-04-09T15:18:29.000Z">2022-04-09</time></div>
-                    <a href="/2022/4/9/famliy-insurance/" class="has-link-black-ter is-size-6">家庭保险基础知识</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-05-28T15:47:17.000Z">2022-05-28</time></div>
+                    <a href="/2022/5/28/thread-pool/" class="has-link-black-ter is-size-6">线程池</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a>
+                        <a class="has-link-grey -link" href="/categories/java%E5%9F%BA%E7%A1%80/">java基础</a>
                     </p>
                 </div>
             </div>
@@ -786,12 +830,23 @@ var _hmt = _hmt || [];
         <ul class="menu-list">
         
         <li>
+            <a class="level is-marginless" href="/archives/2022/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2022</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
             <a class="level is-marginless" href="/archives/2022/05/">
                 <span class="level-start">
                     <span class="level-item">五月 2022</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">7</span>
                 </span>
             </a>
         </li>
@@ -811,17 +866,6 @@ var _hmt = _hmt || [];
             <a class="level is-marginless" href="/archives/2022/03/">
                 <span class="level-start">
                     <span class="level-item">三月 2022</span>
-                </span>
-                <span class="level-end">
-                    <span class="level-item tag">1</span>
-                </span>
-            </a>
-        </li>
-        
-        <li>
-            <a class="level is-marginless" href="/archives/2021/11/">
-                <span class="level-start">
-                    <span class="level-item">十一月 2021</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">1</span>
@@ -1224,7 +1268,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/java/">
                         <span class="tag">java</span>
-                        <span class="tag is-grey">14</span>
+                        <span class="tag is-grey">13</span>
                     </a>
                 </div>
                 
@@ -1274,6 +1318,13 @@ var _hmt = _hmt || [];
                     <a class="tags has-addons" href="/tags/mq/">
                         <span class="tag">mq</span>
                         <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/mysql/">
+                        <span class="tag">mysql</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1330,13 +1381,6 @@ var _hmt = _hmt || [];
                     <a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/">
                         <span class="tag">分布式一致性</span>
                         <span class="tag is-grey">3</span>
-                    </a>
-                </div>
-                
-                <div class="control">
-                    <a class="tags has-addons" href="/tags/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/">
-                        <span class="tag">图数据库</span>
-                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -1434,7 +1478,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">39</span>
+                        <span class="tag is-grey">43</span>
                     </a>
                 </div>
                 
@@ -1463,16 +1507,16 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2022/5/18/sql-optimize/" class="media-left">
+            <a href="/2022/6/5/mysql-index/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SQL优化">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="mysql数据库索引">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-05-18T14:58:43.000Z">2022-05-18</time></div>
-                    <a href="/2022/5/18/sql-optimize/" class="has-link-black-ter is-size-6">SQL优化</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-06-05T15:31:56.000Z">2022-06-05</time></div>
+                    <a href="/2022/6/5/mysql-index/" class="has-link-black-ter is-size-6">mysql数据库索引</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
                     </p>
@@ -1482,18 +1526,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2022/5/15/manage_exp/" class="media-left">
+            <a href="/2022/6/2/transaction-isolation/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="管理心得">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="事务的隔离级别">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-05-15T15:39:34.000Z">2022-05-15</time></div>
-                    <a href="/2022/5/15/manage_exp/" class="has-link-black-ter is-size-6">管理心得</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-06-02T01:48:06.000Z">2022-06-02</time></div>
+                    <a href="/2022/6/2/transaction-isolation/" class="has-link-black-ter is-size-6">事务的隔离级别</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E7%AE%A1%E7%90%86/">管理</a>
+                        <a class="has-link-grey -link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
                     </p>
                 </div>
             </div>
@@ -1501,16 +1545,16 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2022/5/15/com_tech_list/" class="media-left">
+            <a href="/2022/6/2/idempotent/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="常见技术框架清单">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="幂等性">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-05-15T15:39:34.000Z">2022-05-15</time></div>
-                    <a href="/2022/5/15/com_tech_list/" class="has-link-black-ter is-size-6">常见技术框架清单</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-06-02T01:23:04.000Z">2022-06-02</time></div>
+                    <a href="/2022/6/2/idempotent/" class="has-link-black-ter is-size-6">幂等性</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/%E8%BD%AF%E4%BB%B6%E6%8A%80%E6%9C%AF/">软件技术</a>
                     </p>
@@ -1520,16 +1564,16 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2022/5/3/interview/" class="media-left">
+            <a href="/2022/5/29/work-think/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="面试方案">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="工作小感悟">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-05-03T15:39:34.000Z">2022-05-03</time></div>
-                    <a href="/2022/5/3/interview/" class="has-link-black-ter is-size-6">面试方案</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-05-29T05:15:29.000Z">2022-05-29</time></div>
+                    <a href="/2022/5/29/work-think/" class="has-link-black-ter is-size-6">工作小感悟</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/%E8%81%8C%E4%B8%9A/">职业</a>
                     </p>
@@ -1539,18 +1583,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2022/4/9/famliy-insurance/" class="media-left">
+            <a href="/2022/5/28/thread-pool/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="家庭保险基础知识">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="线程池">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-04-09T15:18:29.000Z">2022-04-09</time></div>
-                    <a href="/2022/4/9/famliy-insurance/" class="has-link-black-ter is-size-6">家庭保险基础知识</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2022-05-28T15:47:17.000Z">2022-05-28</time></div>
+                    <a href="/2022/5/28/thread-pool/" class="has-link-black-ter is-size-6">线程池</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a>
+                        <a class="has-link-grey -link" href="/categories/java%E5%9F%BA%E7%A1%80/">java基础</a>
                     </p>
                 </div>
             </div>
@@ -1569,12 +1613,23 @@ var _hmt = _hmt || [];
         <ul class="menu-list">
         
         <li>
+            <a class="level is-marginless" href="/archives/2022/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2022</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
             <a class="level is-marginless" href="/archives/2022/05/">
                 <span class="level-start">
                     <span class="level-item">五月 2022</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">7</span>
                 </span>
             </a>
         </li>
@@ -1594,17 +1649,6 @@ var _hmt = _hmt || [];
             <a class="level is-marginless" href="/archives/2022/03/">
                 <span class="level-start">
                     <span class="level-item">三月 2022</span>
-                </span>
-                <span class="level-end">
-                    <span class="level-item tag">1</span>
-                </span>
-            </a>
-        </li>
-        
-        <li>
-            <a class="level is-marginless" href="/archives/2021/11/">
-                <span class="level-start">
-                    <span class="level-item">十一月 2021</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">1</span>
@@ -2007,7 +2051,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/java/">
                         <span class="tag">java</span>
-                        <span class="tag is-grey">14</span>
+                        <span class="tag is-grey">13</span>
                     </a>
                 </div>
                 
@@ -2057,6 +2101,13 @@ var _hmt = _hmt || [];
                     <a class="tags has-addons" href="/tags/mq/">
                         <span class="tag">mq</span>
                         <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/mysql/">
+                        <span class="tag">mysql</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -2113,13 +2164,6 @@ var _hmt = _hmt || [];
                     <a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/">
                         <span class="tag">分布式一致性</span>
                         <span class="tag is-grey">3</span>
-                    </a>
-                </div>
-                
-                <div class="control">
-                    <a class="tags has-addons" href="/tags/%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93/">
-                        <span class="tag">图数据库</span>
-                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -2217,7 +2261,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">39</span>
+                        <span class="tag is-grey">43</span>
                     </a>
                 </div>
                 

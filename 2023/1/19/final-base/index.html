@@ -164,7 +164,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    5 分钟 读完 (大约 727 个字)
+                    5 分钟 读完 (大约 729 个字)
                 </span>
                 
                 
@@ -179,28 +179,34 @@
         <div class="content">
             <h1 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h1><p>保证不可变<a id="more"></a></p>
 <p>禁止重排序</p>
-<p>确保内存可见性</p>
 <br>
 
-<h1 id="保证不可变"><a href="#保证不可变" class="headerlink" title="保证不可变"></a>保证不可变</h1><ul>
-<li>修饰普通变量：只能进行一次赋值操作，且生命周期内不可变</li>
-<li>修饰成员变量：1、如果是基本类型则不可变，2、如果是引用类型则引用地址不可变，但引用对象内的值可以改变</li>
+<h1 id="保证不可变"><a href="#保证不可变" class="headerlink" title="保证不可变"></a>保证不可变</h1><p>如果修饰基本类型则不可变，如果是引用类型则引用地址不可变，但引用对象内的值可以改变</p>
+<ul>
+<li>修饰实例变量：只能在声明时初始化、非静态初始化块初始化或者构造函数中初始化</li>
+<li>修饰类变量(static修饰的)：声明时初始化或静态初始化块中初始化</li>
+<li>修饰局部变量:只能声明时初始化</li>
 <li>修饰方法：不能被重写</li>
 <li>修饰类：不能被继承</li>
 </ul>
 <br>
 
-<h1 id="禁止重排序"><a href="#禁止重排序" class="headerlink" title="禁止重排序"></a>禁止重排序</h1><p>与volatitle不同final的禁止重排序规则是针对构造函数而言的</p>
-<p>构造函数中的final变量只有先给final赋值或者取值后，才能完成构造函数的初始化。但是普通变量，可能是先初始化构造函数，然后在给变量赋值。</p>
-<p>同理，当获取某个对象时，也是只能先成功获取该对象的引用，再去获取final成员变量的值，但是普通变量不能保证，可能会导致普通变量的读取，排在了获取对象引用的前面</p>
+<h1 id="禁止重排序"><a href="#禁止重排序" class="headerlink" title="禁止重排序"></a>禁止重排序</h1><h3 id="final域为基本类型时"><a href="#final域为基本类型时" class="headerlink" title="final域为基本类型时"></a>final域为基本类型时</h3><ol>
+<li>写final域的重排序:禁止编译器将写final域重排序到构造函数之外.原理是在写之后构造函数return之前插入一个storestore屏障.</li>
+<li>读final域的重排序:初次读对象引用与初次读对应内的final域不能重排序.原理是会在读final域之前插入loadload屏障.</li>
+</ol>
+<h3 id="final域为引用类型时"><a href="#final域为引用类型时" class="headerlink" title="final域为引用类型时"></a>final域为引用类型时</h3><ol>
+<li>写final域的重排序:在构造函数内对一个final引用对象的成员写入与构造函数外对这个对象的引用赋值给一个引用变量时禁止重排序的.</li>
+<li>读final域的重排序:同上</li>
+</ol>
 <figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FinalExample</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">int</span> i;                            <span class="hljs-comment">//普通变量</span></span><br><span class="line">    <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> j;                      <span class="hljs-comment">//final变量</span></span><br><span class="line">    <span class="hljs-keyword">static</span> FinalExample obj;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">FinalExample</span> <span class="hljs-params">()</span> </span>&#123;     <span class="hljs-comment">//构造函数</span></span><br><span class="line">        i = <span class="hljs-number">1</span>;                        <span class="hljs-comment">//写普通域</span></span><br><span class="line">        j = <span class="hljs-number">2</span>;                        <span class="hljs-comment">//写final域</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">writer</span> <span class="hljs-params">()</span> </span>&#123;    <span class="hljs-comment">//写线程A执行</span></span><br><span class="line">        obj = <span class="hljs-keyword">new</span> FinalExample ();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">reader</span> <span class="hljs-params">()</span> </span>&#123;       <span class="hljs-comment">//读线程B执行</span></span><br><span class="line">        FinalExample object = obj;       <span class="hljs-comment">//读对象引用</span></span><br><span class="line">        <span class="hljs-keyword">int</span> a = object.i;                <span class="hljs-comment">//读普通域</span></span><br><span class="line">        <span class="hljs-keyword">int</span> b = object.j;                <span class="hljs-comment">//读final域</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>普通变量，可能是先初始化构造函数，然后再给变量赋值。</p>
 <p>以上面代码为例，A线程负责写入，B线程负责读取。那么a的值可能为空，因为获取对象引用与构造函数中属性赋值做了指令重排序，赋值操作在构造函数返回之后完成。b一定为2，因为final变量禁止了构造函数内的指令重排序，确保在构造函数return之前完成赋值。</p>
-<p>底层原理是：编译器会在final域的写之后，构造函数return之前，插入一个Store屏障</p>
 <br>
 
 <h1 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h1><ul>
-<li>static作用于成员变量用来表示只保存一份副本，而final的作用是用来保证变量不可变</li>
-<li>final主要是保证某个值不变，或者不类不被继承。volatitle主要是保证多个线程对该变量的内存可见性，常用于多个线程开始、结束的标记符等</li>
+<li>static作用于成员变量用来表示只保存一份副本</li>
+<li>volatitle主要是保证多个线程对该变量的内存可见性，常用于多个线程开始、结束的标记符等</li>
 </ul>
 <br>
 
@@ -1485,7 +1491,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">85</span>
+                        <span class="tag is-grey">84</span>
                     </a>
                 </div>
                 
@@ -2305,7 +2311,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">85</span>
+                        <span class="tag is-grey">84</span>
                     </a>
                 </div>
                 

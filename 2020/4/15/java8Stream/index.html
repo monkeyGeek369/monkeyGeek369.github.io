@@ -163,7 +163,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    33 分钟 读完 (大约 4890 个字)
+                    33 分钟 读完 (大约 5009 个字)
                 </span>
                 
                 
@@ -304,6 +304,10 @@
 <p>– findFirst: 返回Stream中的第一个元素，如果Stream为空，返回空Optional</p>
 <p>– noneMatch：是不是Stream中的所有元素都不满足给定的匹配条件</p>
 <p>– max和min：使用给定的比较器（Operator），返回Stream中的最大|最小值</p>
+<p>高级用法如下案例:重点是看范型与函数式编程的结合</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">//实现双map转换</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> &lt;K1,K2,T,U&gt; Map&lt;K1,Map&lt;K2,U&gt;&gt; toNestMap(Collection&lt;T&gt; c,Function&lt;T,K1&gt; keyExe1,</span><br><span class="line">                                                          Function&lt;T,U&gt; keyExe2,</span><br><span class="line">                                                          Function&lt;U,K2&gt; keyExe3)&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> c.stream().collect(Collectors.groupingBy(keyExe1::apply,</span><br><span class="line">                Collectors.collectingAndThen(Collectors.mapping(keyExe2::apply,Collectors.toList()),</span><br><span class="line">                        list -&gt; list.stream().collect(Collectors.toMap(keyExe3::apply,Function.identity(),(k1,k2) -&gt; k1)))</span><br><span class="line">                ));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//数据模型</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChannelMetadataObjectDTO</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> String metadataKey;</span><br><span class="line">    <span class="hljs-keyword">private</span> ChannelMetadataDTO channelMetadataDTO;</span><br><span class="line">&#125;</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChannelMetadataDTO</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> String yqnCode;</span><br><span class="line">    <span class="hljs-keyword">private</span> String yqnName;</span><br><span class="line">    <span class="hljs-keyword">private</span> String yqnExtends;</span><br><span class="line">    <span class="hljs-keyword">private</span> String targetCode;</span><br><span class="line">    <span class="hljs-keyword">private</span> String targetName;</span><br><span class="line">    <span class="hljs-keyword">private</span> String targetExtends;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//调用方式</span></span><br><span class="line">List&lt;ChannelMetadataObjectDTO&gt; metadataMap</span><br><span class="line">toNestMap(metadataMap,ChannelMetadataObjectDTO::getMetadataKey,ChannelMetadataObjectDTO::getChannelMetadataDTO,ChannelMetadataDTO::getYqnCode)</span><br></pre></td></tr></table></figure>
+
+
 <h3 id="其它操作简要介绍如下"><a href="#其它操作简要介绍如下" class="headerlink" title="其它操作简要介绍如下"></a>其它操作简要介绍如下</h3><ul>
 <li>distinct: 对于Stream中包含的元素进行去重操作（去重逻辑依赖元素的equals方法），新生成的Stream中没有重复的元素；</li>
 <li>filter: 对于Stream中包含的元素使用给定的过滤函数进行过滤操作，新生成的Stream只包含符合条件的元素；</li>
@@ -1662,7 +1666,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">85</span>
+                        <span class="tag is-grey">84</span>
                     </a>
                 </div>
                 
@@ -2482,7 +2486,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">85</span>
+                        <span class="tag is-grey">84</span>
                     </a>
                 </div>
                 

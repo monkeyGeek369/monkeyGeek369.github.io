@@ -165,7 +165,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    23 分钟 读完 (大约 3387 个字)
+                    23 分钟 读完 (大约 3381 个字)
                 </span>
                 
                 
@@ -279,10 +279,10 @@
 </ul>
 <h2 id="消费者拒绝消息"><a href="#消费者拒绝消息" class="headerlink" title="消费者拒绝消息"></a>消费者拒绝消息</h2><ul>
 <li><p>channel .basicNack(deliveryTag,false,true)</p>
-<p>不确认deliveryTag对应的消息。第二个参数是否应用于多消息，第三个参数是否requeue。可以nack该消费者先前接收未ack的所有消息。nack后的消息也会被自己消费到。</p>
+<p>第一个参数：消息的唯一标识<br>第二个参数：是否否定应答多条消息，true时否定本消息及之前的多条消息，false只否定本消息<br>第三个参数：是否重回队列。true重回，false丢弃过给到私信队列</p>
 </li>
 <li><p>channel .basicReject(deliveryTag,true)</p>
-<p>拒绝deliveryTag对应的消息，第二个参数是否requeue，true则重新入队列</p>
+<p>同basicNack的1.3参数</p>
 </li>
 <li><p>channel. basicRecover(true)</p>
 <p>是否恢复消息到队列.true重新入队并尽可能分给其他消费者，false重新入队并自己消费</p>
@@ -1604,7 +1604,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">85</span>
+                        <span class="tag is-grey">84</span>
                     </a>
                 </div>
                 
@@ -2424,7 +2424,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">85</span>
+                        <span class="tag is-grey">84</span>
                     </a>
                 </div>
                 

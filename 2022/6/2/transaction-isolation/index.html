@@ -163,7 +163,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    3 分钟 读完 (大约 514 个字)
+                    5 分钟 读完 (大约 721 个字)
                 </span>
                 
                 
@@ -210,6 +210,15 @@
 <li>serlalizable可串行化</li>
 </ul>
 <p>所有事物均排队串行执行，级别最高，效率最低。</p>
+<h1 id="Spring事物传播机制"><a href="#Spring事物传播机制" class="headerlink" title="Spring事物传播机制"></a>Spring事物传播机制</h1><ul>
+<li>REQUIRED:没有就新建，有就加入。默认设置</li>
+<li>SUPPORTS：有事务就加入，没有则以非事务执行</li>
+<li>MANDATORY：有事务就加入，没有则报异常</li>
+<li>REQUIRES_NEW：任何情况都创建新事物</li>
+<li>NOT_SUPPORTED：如果当前存在事务，就把当前事务挂起</li>
+<li>NEVER：如果当前存在事务，则抛出异常</li>
+<li>NESTED：如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则按REQUIRED属性执行。区别是嵌套事务，外层的事务如果回滚，会导致内层的事务也回滚；但是内层的事务如果回滚，仅仅是回滚自己的代码，不影响外层的事务的代码</li>
+</ul>
 <br>
 
 <br>
@@ -1498,7 +1507,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">85</span>
+                        <span class="tag is-grey">84</span>
                     </a>
                 </div>
                 
@@ -2318,7 +2327,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">85</span>
+                        <span class="tag is-grey">84</span>
                     </a>
                 </div>
                 

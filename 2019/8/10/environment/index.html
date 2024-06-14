@@ -163,7 +163,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    4 分钟 读完 (大约 578 个字)
+                    5 分钟 读完 (大约 765 个字)
                 </span>
                 
                 
@@ -179,12 +179,22 @@
             <p><strong>简介</strong></p>
 <p>根据hexo官网简介hexo是一个快速、简介且高效的博客框架。hexo使用markdown解析文章，可以在几秒内利用靓丽主题生成静态网页。<a id="more"></a>本系列教程是以官网简介为基础再加上实际操作经验总结所写，看到这里证明大家希望搭建自己的技术了乐园，那么请细心往下看，避免后期踩坑。</p>
 <p><strong>nodeJS安装</strong></p>
-<p>nodeja是一款优秀的js服务器软件，安装教程也是十分简单，只需下载下来双击打开，一直点击下一步傻瓜安装即可。下载网址 <a target="_blank" rel="noopener" href="https://nodejs.org/en/%EF%BC%8C%E5%BD%93%E5%AE%89%E8%A3%85%E6%88%90%E5%8A%9F%E5%90%8E%E5%8F%AF%E8%BE%93%E5%85%A5cmd%E8%BF%9B%E5%85%A5%E5%91%BD%E4%BB%A4%E6%8E%A7%E5%88%B6%E5%99%A8%E8%BE%93%E5%85%A5node">https://nodejs.org/en/，当安装成功后可输入cmd进入命令控制器输入node</a> -v 如果出现版本号则证明安装成功。</p>
+<p>nodejs是一款优秀的js运行时环境（类似java中的jdk），用于独立于浏览器运行js代码。</p>
+<p>安装时建议先安装nvm然后再通过nvm进行不同版本的nodejs安装和切换使用，因为hexo版本的不同对nodejs的版本有要求。</p>
+<p>安装教程自行搜索，本文不进行介绍。</p>
 <p><strong>git安装</strong></p>
-<p>关于git的系列教程小伙伴可以去看我写的git相关博文，在这里简而言之，git的安装类似于nodejs，均是傻瓜安装模式，安装成功后鼠标右键若出现git bash here即证明安装成功，点击此即可进入git命令控制器</p>
+<p>关于git的系列教程小伙伴可以去看我写的git相关博文，在这里简而言之，git的安装类似于nodejs，均是傻瓜安装模式，安装成功后鼠标右键若出现git bash here即证明安装成功</p>
+<p>注意：hexo生成的网站可以通过github进行发布成可浏览站点，这就要求自身要建立起本地同github是相关密钥配置，本文不再详述。</p>
 <p><strong>hexo安装</strong></p>
-<p>在确保nodejs与git安装成功后即可进行hexo的安装，hexo的安装需要我们指定安装地址，例如我们想要安装到D盘的myblog文件夹，那么首先需要手动创建该文件夹，创建成功后进入该文件夹并鼠标右击git bash here在此文件夹打开git命令控制器，输入如下命令即可实现hexo安装。 npm install -g hexo-cli</p>
-<p><span style="color:red">注意：</span>本教程基于windows系统，mac或linux等系统的环境安装请参考官网 <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">https://hexo.io/zh-cn/docs/</a></p>
+<p>hexo的安装可以按照官方文档推荐的步骤进行，以下介绍一些基本知识点和注意事项：</p>
+<p>1、hexo是基于nodejs的插件，插件的安装可以自定义安装为局部或者全局，一般安装局部就够用</p>
+<p>2、hexo命令在安装hexo插件后或许不生效，原因是path路径未指定真实的插件路径（将 Hexo 所在的目录下的 node_modules 添加到环境变量之中即可直接使用 hexo命令）</p>
+<p><span style="color:red">注意：</span></p>
+<p>1、本教程基于windows系统，mac或linux等系统的环境安装请参考官网 <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">https://hexo.io/zh-cn/docs/</a></p>
+<p>2、nodejs安装成功后可用命令node -v查看版本</p>
+<p>3、hexo安装成功后可用命令hexo -v查看信息（注意此时打开cmd是需要用管理员权限，否则报错）</p>
+<p>4、hexo安装一定要注意与nodejs的版本对应，否则会出现问题。（如下hexo -v信息仅供参考）</p>
+<p>hexo-cli: 4.3.2<br>os: win32 10.0.22631 undefined<br>node: 11.15.0<br>v8: 7.0.276.38-node.19<br>uv: 1.27.0<br>zlib: 1.2.11<br>brotli: 1.0.7<br>ares: 1.15.0<br>modules: 67<br>nghttp2: 1.37.0<br>napi: 4<br>llhttp: 1.1.1<br>http_parser: 2.8.0<br>openssl: 1.1.1b<br>cldr: 34.0<br>icu: 63.1<br>tz: 2018e<br>unicode: 11.0</p>
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -354,7 +364,7 @@ var _hmt = _hmt || [];
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        183
+                        193
                     </p>
                 </div>
             </div>
@@ -364,7 +374,7 @@ var _hmt = _hmt || [];
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        26
+                        28
                     </p>
                 </div>
             </div>
@@ -374,7 +384,7 @@ var _hmt = _hmt || [];
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        48
+                        49
                     </p>
                 </div>
             </div>
@@ -466,6 +476,14 @@ var _hmt = _hmt || [];
                 <span class="level-item tag">8</span>
             </span>
         </a></li><li>
+        <a class="level is-marginless" href="/categories/container/">
+            <span class="level-start">
+                <span class="level-item">container</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
         <a class="level is-marginless" href="/categories/experienceShare/">
             <span class="level-start">
                 <span class="level-item">experienceShare</span>
@@ -495,7 +513,15 @@ var _hmt = _hmt || [];
                 <span class="level-item">java基础</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">58</span>
+                <span class="level-item tag">54</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/jvm/">
+            <span class="level-start">
+                <span class="level-item">jvm</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/mq/">
@@ -551,7 +577,7 @@ var _hmt = _hmt || [];
                 <span class="level-item">所感</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">10</span>
+                <span class="level-item tag">11</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">
@@ -639,7 +665,7 @@ var _hmt = _hmt || [];
                 <span class="level-item">软件技术</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">12</span>
+                <span class="level-item tag">13</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/">
@@ -661,7 +687,7 @@ var _hmt = _hmt || [];
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/BASE%E7%90%86%E8%AE%BA/" style="font-size: 10px;">BASE理论</a> <a href="/tags/CAP%E7%90%86%E8%AE%BA/" style="font-size: 10px;">CAP理论</a> <a href="/tags/RPA/" style="font-size: 16.36px;">RPA</a> <a href="/tags/RPA%E7%BB%84%E4%BB%B6%E5%BA%93/" style="font-size: 10px;">RPA组件库</a> <a href="/tags/Saga/" style="font-size: 10px;">Saga</a> <a href="/tags/Spring/" style="font-size: 13.64px;">Spring</a> <a href="/tags/UiPath/" style="font-size: 14.55px;">UiPath</a> <a href="/tags/XA%E8%A7%84%E8%8C%83/" style="font-size: 10px;">XA规范</a> <a href="/tags/activiti/" style="font-size: 16.36px;">activiti</a> <a href="/tags/annotation%E6%B3%A8%E8%A7%A3/" style="font-size: 13.64px;">annotation注解</a> <a href="/tags/apollo/" style="font-size: 10px;">apollo</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/experienceShare/" style="font-size: 10px;">experienceShare</a> <a href="/tags/feign/" style="font-size: 10px;">feign</a> <a href="/tags/git/" style="font-size: 13.64px;">git</a> <a href="/tags/github/" style="font-size: 11.82px;">github</a> <a href="/tags/hexo/" style="font-size: 18.18px;">hexo</a> <a href="/tags/janusGraph/" style="font-size: 11.82px;">janusGraph</a> <a href="/tags/java%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">java语法基础</a> <a href="/tags/java%E9%9B%86%E5%90%88/" style="font-size: 19.09px;">java集合</a> <a href="/tags/jvm/" style="font-size: 12.73px;">jvm</a> <a href="/tags/key/" style="font-size: 10px;">key</a> <a href="/tags/mq/" style="font-size: 13.64px;">mq</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/php%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">php基础</a> <a href="/tags/php%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">php语言</a> <a href="/tags/rabbitmq/" style="font-size: 13.64px;">rabbitmq</a> <a href="/tags/ribbon/" style="font-size: 10px;">ribbon</a> <a href="/tags/springboot/" style="font-size: 10.91px;">springboot</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 14.55px;">事务</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 14.55px;">分布式</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 11.82px;">分布式一致性</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 14.55px;">多线程</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/" style="font-size: 12.73px;">并发容器</a> <a href="/tags/%E6%88%90%E9%95%BF/" style="font-size: 10px;">成长</a> <a href="/tags/%E6%89%80%E6%84%9F/" style="font-size: 18.18px;">所感</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 14.55px;">数据一致性</a> <a href="/tags/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/" style="font-size: 10px;">标准与规范</a> <a href="/tags/%E7%90%86%E8%B4%A2/" style="font-size: 10.91px;">理财</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.45px;">算法</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/" style="font-size: 10px;">系统装机</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" style="font-size: 11.82px;">网络协议</a> <a href="/tags/%E8%81%8C%E4%B8%9A%E5%8F%91%E5%B1%95/" style="font-size: 18.18px;">职业发展</a> <a href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/" style="font-size: 17.27px;">读后感</a> <a href="/tags/%E9%94%81/" style="font-size: 16.36px;">锁</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 20px;">面试</a>
+        <a href="/tags/BASE%E7%90%86%E8%AE%BA/" style="font-size: 10px;">BASE理论</a> <a href="/tags/CAP%E7%90%86%E8%AE%BA/" style="font-size: 10px;">CAP理论</a> <a href="/tags/RPA/" style="font-size: 16.36px;">RPA</a> <a href="/tags/RPA%E7%BB%84%E4%BB%B6%E5%BA%93/" style="font-size: 10px;">RPA组件库</a> <a href="/tags/Saga/" style="font-size: 10px;">Saga</a> <a href="/tags/Spring/" style="font-size: 13.64px;">Spring</a> <a href="/tags/UiPath/" style="font-size: 14.55px;">UiPath</a> <a href="/tags/XA%E8%A7%84%E8%8C%83/" style="font-size: 10px;">XA规范</a> <a href="/tags/activiti/" style="font-size: 16.36px;">activiti</a> <a href="/tags/annotation%E6%B3%A8%E8%A7%A3/" style="font-size: 13.64px;">annotation注解</a> <a href="/tags/apollo/" style="font-size: 10px;">apollo</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/experienceShare/" style="font-size: 10px;">experienceShare</a> <a href="/tags/feign/" style="font-size: 10px;">feign</a> <a href="/tags/git/" style="font-size: 13.64px;">git</a> <a href="/tags/github/" style="font-size: 11.82px;">github</a> <a href="/tags/hexo/" style="font-size: 18.18px;">hexo</a> <a href="/tags/janusGraph/" style="font-size: 11.82px;">janusGraph</a> <a href="/tags/java%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">java语法基础</a> <a href="/tags/java%E9%9B%86%E5%90%88/" style="font-size: 19.09px;">java集合</a> <a href="/tags/jvm/" style="font-size: 18.18px;">jvm</a> <a href="/tags/key/" style="font-size: 10px;">key</a> <a href="/tags/mq/" style="font-size: 13.64px;">mq</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/php%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">php基础</a> <a href="/tags/php%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">php语言</a> <a href="/tags/rabbitmq/" style="font-size: 13.64px;">rabbitmq</a> <a href="/tags/ribbon/" style="font-size: 10px;">ribbon</a> <a href="/tags/springboot/" style="font-size: 10.91px;">springboot</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 14.55px;">事务</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 14.55px;">分布式</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 11.82px;">分布式一致性</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 14.55px;">多线程</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/" style="font-size: 12.73px;">并发容器</a> <a href="/tags/%E6%88%90%E9%95%BF/" style="font-size: 10px;">成长</a> <a href="/tags/%E6%89%80%E6%84%9F/" style="font-size: 19.09px;">所感</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 14.55px;">数据一致性</a> <a href="/tags/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/" style="font-size: 10px;">标准与规范</a> <a href="/tags/%E7%90%86%E8%B4%A2/" style="font-size: 10.91px;">理财</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.45px;">算法</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/" style="font-size: 10px;">系统装机</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" style="font-size: 11.82px;">网络协议</a> <a href="/tags/%E8%81%8C%E4%B8%9A%E5%8F%91%E5%B1%95/" style="font-size: 18.18px;">职业发展</a> <a href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/" style="font-size: 17.27px;">读后感</a> <a href="/tags/%E9%94%81/" style="font-size: 16.36px;">锁</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 20px;">面试</a>
     </div>
 </div>
 
@@ -678,18 +704,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/rhinitis/" class="media-left">
+            <a href="/2024/6/13/docker_command/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="鼻炎预防治疗">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="docker常用命令">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:34:33.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/rhinitis/" class="has-link-black-ter is-size-6">鼻炎预防治疗</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2024-06-13T07:30:06.000Z">2024-06-13</time></div>
+                    <a href="/2024/6/13/docker_command/" class="has-link-black-ter is-size-6">docker常用命令</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a>
+                        <a class="has-link-grey -link" href="/categories/container/">container</a>
                     </p>
                 </div>
             </div>
@@ -697,18 +723,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/grow_feel/" class="media-left">
+            <a href="/2023/12/28/stringTable/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="成长">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="字符串常量池">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:21:53.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/grow_feel/" class="has-link-black-ter is-size-6">成长</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-27T16:06:57.000Z">2023-12-28</time></div>
+                    <a href="/2023/12/28/stringTable/" class="has-link-black-ter is-size-6">字符串常量池</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%89%80%E6%84%9F/">所感</a>
+                        <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                     </p>
                 </div>
             </div>
@@ -716,18 +742,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/work_feel/" class="media-left">
+            <a href="/2023/12/26/exeE/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="工作">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="执行引擎">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:21:41.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/work_feel/" class="has-link-black-ter is-size-6">工作</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-25T16:06:57.000Z">2023-12-26</time></div>
+                    <a href="/2023/12/26/exeE/" class="has-link-black-ter is-size-6">执行引擎</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%89%80%E6%84%9F/">所感</a>
+                        <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                     </p>
                 </div>
             </div>
@@ -735,18 +761,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/life_feel/" class="media-left">
+            <a href="/2023/12/20/ai-tools/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="生活">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="ai工具调研">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:21:30.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/life_feel/" class="has-link-black-ter is-size-6">生活</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-20T12:26:51.000Z">2023-12-20</time></div>
+                    <a href="/2023/12/20/ai-tools/" class="has-link-black-ter is-size-6">ai工具调研</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%89%80%E6%84%9F/">所感</a>
+                        <a class="has-link-grey -link" href="/categories/%E8%BD%AF%E4%BB%B6%E6%8A%80%E6%9C%AF/">软件技术</a>
                     </p>
                 </div>
             </div>
@@ -754,18 +780,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/kaogong/" class="media-left">
+            <a href="/2023/12/9/jvm-base/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="考公相关资料">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="jvm基础知识">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:12:31.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/kaogong/" class="has-link-black-ter is-size-6">考公相关资料</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-09T15:26:04.000Z">2023-12-09</time></div>
+                    <a href="/2023/12/9/jvm-base/" class="has-link-black-ter is-size-6">jvm基础知识</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%88%90%E9%95%BF/">成长</a>
+                        <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                     </p>
                 </div>
             </div>
@@ -784,12 +810,45 @@ var _hmt = _hmt || [];
         <ul class="menu-list">
         
         <li>
+            <a class="level is-marginless" href="/archives/2024/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2024</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2023/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2023</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2023/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2023</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
             <a class="level is-marginless" href="/archives/2023/07/">
                 <span class="level-start">
                     <span class="level-item">七月 2023</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">5</span>
+                    <span class="level-item tag">6</span>
                 </span>
             </a>
         </li>
@@ -1233,6 +1292,13 @@ var _hmt = _hmt || [];
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/docker/">
+                        <span class="tag">docker</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/eureka/">
                         <span class="tag">eureka</span>
                         <span class="tag is-grey">1</span>
@@ -1298,7 +1364,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/jvm/">
                         <span class="tag">jvm</span>
-                        <span class="tag is-grey">4</span>
+                        <span class="tag is-grey">10</span>
                     </a>
                 </div>
                 
@@ -1410,7 +1476,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E6%89%80%E6%84%9F/">
                         <span class="tag">所感</span>
-                        <span class="tag is-grey">10</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 
@@ -1480,7 +1546,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">84</span>
+                        <span class="tag is-grey">91</span>
                     </a>
                 </div>
                 
@@ -1509,18 +1575,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/rhinitis/" class="media-left">
+            <a href="/2024/6/13/docker_command/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="鼻炎预防治疗">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="docker常用命令">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:34:33.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/rhinitis/" class="has-link-black-ter is-size-6">鼻炎预防治疗</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2024-06-13T07:30:06.000Z">2024-06-13</time></div>
+                    <a href="/2024/6/13/docker_command/" class="has-link-black-ter is-size-6">docker常用命令</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a>
+                        <a class="has-link-grey -link" href="/categories/container/">container</a>
                     </p>
                 </div>
             </div>
@@ -1528,18 +1594,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/grow_feel/" class="media-left">
+            <a href="/2023/12/28/stringTable/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="成长">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="字符串常量池">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:21:53.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/grow_feel/" class="has-link-black-ter is-size-6">成长</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-27T16:06:57.000Z">2023-12-28</time></div>
+                    <a href="/2023/12/28/stringTable/" class="has-link-black-ter is-size-6">字符串常量池</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%89%80%E6%84%9F/">所感</a>
+                        <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                     </p>
                 </div>
             </div>
@@ -1547,18 +1613,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/work_feel/" class="media-left">
+            <a href="/2023/12/26/exeE/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="工作">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="执行引擎">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:21:41.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/work_feel/" class="has-link-black-ter is-size-6">工作</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-25T16:06:57.000Z">2023-12-26</time></div>
+                    <a href="/2023/12/26/exeE/" class="has-link-black-ter is-size-6">执行引擎</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%89%80%E6%84%9F/">所感</a>
+                        <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                     </p>
                 </div>
             </div>
@@ -1566,18 +1632,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/life_feel/" class="media-left">
+            <a href="/2023/12/20/ai-tools/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="生活">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="ai工具调研">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:21:30.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/life_feel/" class="has-link-black-ter is-size-6">生活</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-20T12:26:51.000Z">2023-12-20</time></div>
+                    <a href="/2023/12/20/ai-tools/" class="has-link-black-ter is-size-6">ai工具调研</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%89%80%E6%84%9F/">所感</a>
+                        <a class="has-link-grey -link" href="/categories/%E8%BD%AF%E4%BB%B6%E6%8A%80%E6%9C%AF/">软件技术</a>
                     </p>
                 </div>
             </div>
@@ -1585,18 +1651,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/kaogong/" class="media-left">
+            <a href="/2023/12/9/jvm-base/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="考公相关资料">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="jvm基础知识">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:12:31.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/kaogong/" class="has-link-black-ter is-size-6">考公相关资料</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-09T15:26:04.000Z">2023-12-09</time></div>
+                    <a href="/2023/12/9/jvm-base/" class="has-link-black-ter is-size-6">jvm基础知识</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%88%90%E9%95%BF/">成长</a>
+                        <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                     </p>
                 </div>
             </div>
@@ -1615,12 +1681,45 @@ var _hmt = _hmt || [];
         <ul class="menu-list">
         
         <li>
+            <a class="level is-marginless" href="/archives/2024/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2024</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2023/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2023</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2023/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2023</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
             <a class="level is-marginless" href="/archives/2023/07/">
                 <span class="level-start">
                     <span class="level-item">七月 2023</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">5</span>
+                    <span class="level-item tag">6</span>
                 </span>
             </a>
         </li>
@@ -2064,6 +2163,13 @@ var _hmt = _hmt || [];
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/docker/">
+                        <span class="tag">docker</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/eureka/">
                         <span class="tag">eureka</span>
                         <span class="tag is-grey">1</span>
@@ -2129,7 +2235,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/jvm/">
                         <span class="tag">jvm</span>
-                        <span class="tag is-grey">4</span>
+                        <span class="tag is-grey">10</span>
                     </a>
                 </div>
                 
@@ -2241,7 +2347,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E6%89%80%E6%84%9F/">
                         <span class="tag">所感</span>
-                        <span class="tag is-grey">10</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 
@@ -2311,7 +2417,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">84</span>
+                        <span class="tag is-grey">91</span>
                     </a>
                 </div>
                 
@@ -2336,7 +2442,7 @@ var _hmt = _hmt || [];
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2023 monkeyGeek&nbsp;
+                &copy; 2024 monkeyGeek&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
                         href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 

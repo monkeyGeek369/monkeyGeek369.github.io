@@ -2,17 +2,17 @@
 <html  lang="zh">
 <head>
     <meta charset="utf-8">
-<title>分类: java基础 - monkeyGeek</title>
+<title>分类: jvm - monkeyGeek</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
 
 
-    <meta name="description" content="简介 程序计数器，虚拟机栈，本地方法栈是线程私有的">
+    <meta name="description" content="简介运行时数据区整体结构如下：  程序计数器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="jvm内存模型">
 <meta property="og:url" content="https://monkeygeek369.github.io/2022/6/18/memory/index.html">
 <meta property="og:site_name" content="monkeyGeek">
-<meta property="og:description" content="简介 程序计数器，虚拟机栈，本地方法栈是线程私有的">
+<meta property="og:description" content="简介运行时数据区整体结构如下：  程序计数器">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://monkeygeek369.github.io/images/og_image.png">
 <meta property="article:published_time" content="2022-06-18T07:02:04.000Z">
@@ -157,14 +157,14 @@
                 <time class="level-item has-text-grey" datetime="2022-06-18T07:02:04.000Z">2022-06-18</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/java%E5%9F%BA%E7%A1%80/">java基础</a>
+                <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                 </div>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    6 分钟 读完 (大约 902 个字)
+                    24 分钟 读完 (大约 3643 个字)
                 </span>
                 
                 
@@ -177,69 +177,271 @@
             
         </h1>
         <div class="content">
-            <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><ul>
-<li>程序计数器，虚拟机栈，本地方法栈是线程私有的<a id="more"></a></li>
-<li>堆是线程共有的</li>
-<li>方法区可以被各个线程共享</li>
+            <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>运行时数据区整体结构如下：</p>
+<ul>
+<li>程序计数器<a id="more"></a></li>
+<li>虚拟机栈</li>
+<li>本地方法栈</li>
+<li>堆</li>
+<li>方法区（永久代/metaspace）</li>
 </ul>
-<br>
-
-<h1 id="线程共享"><a href="#线程共享" class="headerlink" title="线程共享"></a>线程共享</h1><h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>是java虚拟机所管理的内存中最大的一块内存区域，也是被各个*<strong>线程共享**<em>的内存区域，该内存区域</em></strong>存放了对象实例及数组（但不是所有的对象实例都在堆中）***。</p>
+<p><br><br><br></p>
+<h1 id="CPU基础知识"><a href="#CPU基础知识" class="headerlink" title="CPU基础知识"></a>CPU基础知识</h1><h3 id="CPU缓存"><a href="#CPU缓存" class="headerlink" title="CPU缓存"></a>CPU缓存</h3><ul>
+<li>一级缓存：cup内核有独立一级缓存</li>
+<li>二级缓存：cup内核有独立二级缓存</li>
+<li>三级缓存：cup内核共享三级缓存，会存在一致性问题</li>
+</ul>
+<h3 id="缓存一致性问题解决"><a href="#缓存一致性问题解决" class="headerlink" title="缓存一致性问题解决"></a>缓存一致性问题解决</h3><ul>
+<li>总线锁：cpu取值时对总线上锁</li>
+<li>缓存一致性协议MESI协议：modify/exclusive/shared/invalid，简单来讲cpu会对读写的数据进行四种状态的标记，不同的状态处理的方式不同。（无法被缓存的数据或者夸缓存行的数据MESI无法解决，还是要靠总线锁）</li>
+</ul>
+<h3 id="缓存行"><a href="#缓存行" class="headerlink" title="缓存行"></a>缓存行</h3><ul>
+<li>目的：读区数据时进行缓存行cache line整行读区（主流一行64字节），提高效率。</li>
+<li>伪共享问题：同一缓存行内的不同数据被不同cpu使用锁定，当数据被改动后，整个缓存行会被告知修改，不同cpu重新读区，造成互相影响</li>
+<li>缓存行对齐提效：利用缓存行64字节以及整行读写的特点，利用“padding+真实数据 = 64字节”的方式提升真实数据对象的读写操作</li>
+</ul>
+<h3 id="乱序问题"><a href="#乱序问题" class="headerlink" title="乱序问题"></a>乱序问题</h3><ul>
+<li>并行执行：当两条指令没有依赖关系，cpu会并行执行</li>
+<li>合并写：写操作有可能会放在一起合并操作</li>
+<li>指令重排序：两条互相不影响的指令有可能被重新排序执行</li>
+</ul>
+<h3 id="有序性保证"><a href="#有序性保证" class="headerlink" title="有序性保证"></a>有序性保证</h3><ul>
+<li>cpu内存屏障<ul>
+<li>sfence:写屏障，屏障前后的写操作不能重排</li>
+<li>lfence:读屏障，屏障前后的读操作不能重排</li>
+<li>mfence:读写屏障，屏障前后的读写操作不能重排</li>
+</ul>
+</li>
+<li>lock指令</li>
+</ul>
+<h3 id="并行与并发"><a href="#并行与并发" class="headerlink" title="并行与并发"></a>并行与并发</h3><ul>
+<li>串行：以垃圾回收为例，串行回收器只有一个垃圾回收线程，执行时用户线程无法执行</li>
+<li>并行：以垃圾回收为例，并行回收器可以有多个垃圾回收线程，执行时用户线程无法执行</li>
+<li>并发：以垃圾回收为例，并发回收器可以有多个垃圾回收线程，执行时用户线程可以同时执行。例如采用时间片轮训的方式</li>
+</ul>
+<p><br><br><br></p>
+<h1 id="线程共享"><a href="#线程共享" class="headerlink" title="线程共享"></a>线程共享</h1><h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><ul>
+<li>JVM启动（程序启动）时被创建，是jvm中最重要、最大的一块内存空间</li>
+<li>可以物理上不连续但逻辑是连续</li>
+<li>所有线程共享，但可以对不同线程划分私有缓存区TLAB</li>
+<li>存放对象、数组、class对象信息等</li>
+<li>-Xms：设置堆初始内存 memory star，-Xms600m，默认是物理内存1/64</li>
+<li>-Xmx：设置堆最大内存 memory max，-Xmx600m，默认是物理内存1/4</li>
+<li>建议初始和最大设置一样，避免堆内存动态变化导致的资源浪费</li>
+</ul>
+<h4 id="堆的内存结构"><a href="#堆的内存结构" class="headerlink" title="堆的内存结构"></a>堆的内存结构</h4><ul>
+<li>年轻代<ul>
+<li>组成方式：Eden+survivor0+survivor1</li>
+<li>默认比例：8:1:1，实际上却是6:1:1因为jvm对这里有个自适应的设置（可以关闭）</li>
+<li>设置比例：-XX:SurvivorRatio=8，即设置8:1:1</li>
+<li>特殊设置：-Xmn设置年轻代的大小（用的很少）</li>
+</ul>
+</li>
+<li>年老代<ul>
+<li>-XX:NewRatio=2设置老年代/新生代的比值</li>
+</ul>
+</li>
+<li>永久代/方法区/元数据区：java8及以后已经不属于堆</li>
+</ul>
+<h4 id="新生代对象分配与回收过程"><a href="#新生代对象分配与回收过程" class="headerlink" title="新生代对象分配与回收过程"></a>新生代对象分配与回收过程</h4><ol>
+<li>新生代对象在eden区创建（YongGC只有在eden满时才触发，s区不会触发）</li>
+<li>当第一次ygc时eden存活对象放在s0（放不下时直接放入老年代）</li>
+<li>当第二次ygc时eden与s0进行回收，存活对象放入s1（放不下时直接放入老年代）</li>
+<li>当第三次ygc时eden与s1进行回收，存活对象放入s0（放不下时直接放入老年代）</li>
+<li>反复执行上面过程，当对象age年龄计数器达到15（这个数值可以修改）会将对象放入老年代</li>
+<li>如果新生对象过大，将直接放入老年代</li>
+</ol>
+<ul>
+<li>老年代满了会触发fullGC</li>
+<li>老年代fullGC放不下了会触发oom</li>
+</ul>
+<h4 id="GC概念简单说明"><a href="#GC概念简单说明" class="headerlink" title="GC概念简单说明"></a>GC概念简单说明</h4><p>分代的目的是为了提高gc的性能，研究表明绝大多数对象都是朝生夕死的，如果不分代回收，那么性能会极大下降。</p>
+<ol>
+<li>部分回收<ol>
+<li>Minor gc/yang gc：eden区满了针对新生代进行回收。会造成stw，但是速度很快</li>
+<li>Major gc/old gc：老年代满了针对老年代进行回收，目前之后cms才会对老年代进行单独回收。会造成stw，速度很长</li>
+<li>Mix gc：回收整个新生代及部分老年代，目前只有g1才会有这种行为</li>
+</ol>
+</li>
+<li>整堆回收<ol>
+<li>Full gc：整个堆和方法区回收</li>
+</ol>
+</li>
+</ol>
+<h4 id="TLAB（thread-local-allocation-buffer）"><a href="#TLAB（thread-local-allocation-buffer）" class="headerlink" title="TLAB（thread local allocation buffer）"></a>TLAB（thread local allocation buffer）</h4><p>线程本地分配缓冲区。由于堆空间是多线程共享的，那么多线程在分配内存的时候会存在同步问题，需要加锁进行解决，但是这样会降低性能，因此出现了TLAB。目的是单独为每一个线程在eden区分配单独的内存空间。</p>
+<p>当TLAB空间不够时jvm会进行加锁处理。</p>
+<ul>
+<li>-XX:UseTLAB可以设置是否开启TLAB，默认开启</li>
+<li>-XX:TLABWasteTargetPercent可以设置TLAB大小，默认是eden的1%</li>
+</ul>
+<h4 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h4><ul>
+<li>堆是对象存储的唯一选择吗？不是<ul>
+<li>逃逸分析后有可能将对象直接在栈上分配</li>
+<li>TaobaoVM会将生命周期长的对象直接分配到堆外</li>
+</ul>
+</li>
+<li>什么是逃逸分析？<ul>
+<li>如果方法中定义的对象没有被外部使用则说明没有逃逸，否则发生逃逸。</li>
+</ul>
+</li>
+<li>编译器的代码优化方式有哪些？<ul>
+<li>栈上分配：经过逃逸分析后未发生逃逸的对象直接分配到栈上</li>
+<li>同步省略：即锁消除，如果一个对象被发现只能被一个线程访问到，则会省略同步（即使增加了锁）</li>
+<li>标量替换：进过逃逸分析后发现对象未发生逃逸，那么对象可能被分解为其组成属性直接存放在栈上，无需创建对象。以属性标量来代替对象的作用。</li>
+</ul>
+</li>
+</ul>
 <br>
 
 <h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><ul>
-<li>也称”<strong><em>永久代</em></strong>“，用于*<strong>*存储虚拟机加载的类信息、常量、静态变量**</strong></li>
-<li>默认最小值为16MB，最大值为64MB（64位JVM由于指针膨胀，默认是85M）</li>
-<li>它是*<strong>*一片连续的堆空间**</strong>，并与堆空间连续</li>
-<li>垃圾收集是和老年代(old generation)捆绑在一起的，无论谁满了都会一起回收</li>
-<li>从JDK7*<strong>*开始移除永久代（但并没有移除）**</strong></li>
+<li>（以hotspot为例）也称为永久代，JDK8后称为元空间Metaspace</li>
+<li>多线程共享、可以是不连续的空间、关闭jvm会被释放</li>
+<li>方法区的大小决定可以加载多少类</li>
+<li>jdk7之前大小设置<ul>
+<li>-XX:PermSize=200m设置初始值，默认20.75m</li>
+<li>-XX:MaxPermSize=200m设置最大值，默认82m</li>
+</ul>
+</li>
+<li>jdk8及之后大小设置<ul>
+<li>-XX:MetaspaceSize=100m设置初始值，又称为高水位线，一旦触及这个水位线就会触发full gc并重新设置水位线，因此在不超过最大值的情况下可以调高这个高水位线</li>
+<li>-XX:MaxMetaspaceSize=100m设置最大值，如果不设置，默认最大值就是系统内存</li>
+</ul>
+</li>
+</ul>
+<h4 id="演进过程"><a href="#演进过程" class="headerlink" title="演进过程"></a>演进过程</h4><ol>
+<li>jdk7之前称为永久代（使用虚拟机设置的内存），jdk8后被元空间替代（属于本地内存）</li>
+<li>只有hotspot才存在方法区，其它虚拟机不一定有</li>
+<li>Jdk1.6存在永久代并在永久代存放静态变量</li>
+<li>jdk1.7有永久代但逐步弱化，静态变量和字符串常量池存放在堆中</li>
+<li>jdk1.8无永久代但逐步弱化，静态变量和字符串常量池存放在堆中</li>
+<li>为什么要用元空间代替永久代（为永久代设置合适的大小困难，对永久代调优困难）</li>
+<li>为什么迁移字符串常量池？永久代只有在full gc时才会回收，效率低，在程序运行时会创建大量的字符串，容易导致永久代内存溢出</li>
+<li>关于静态变量的说明（无论是什么jdk版本静态变量的对象都是放在堆中，只是引用在1.6前放在永久代）</li>
+</ol>
+<h4 id="方法区内部结构"><a href="#方法区内部结构" class="headerlink" title="方法区内部结构"></a>方法区内部结构</h4><ul>
+<li>类型信息(即类class文件完整信息)<ul>
+<li>完整类名</li>
+<li>父类完整类名</li>
+<li>类加载器信息</li>
+<li>修饰符</li>
+<li>直接接口的有序列表</li>
+<li>域信息（成员变量）：名称、类型、修饰符</li>
+<li>方法信息：名称、返回值类型、参数、修饰符、字节码、操作数栈、局部变量表、异常表</li>
+</ul>
+</li>
+<li>运行时常量池<ul>
+<li>字节码文件中的常量池表中记录的字面量和符号引用会在类加载后放入运行时常量池</li>
+<li>与字节码常量池的区别是具备动态性</li>
+<li>字符串常量池（jdk1.7后放入堆中)</li>
+</ul>
+</li>
+<li>静态变量（jdk1.7后放入堆中)</li>
+<li>JIT代码缓存</li>
+</ul>
+<h4 id="方法区垃圾回收"><a href="#方法区垃圾回收" class="headerlink" title="方法区垃圾回收"></a>方法区垃圾回收</h4><p>虚拟机规范并未规定一定要回收，可以不回收。方法区回收条件很苛刻，主要涉及如下部分</p>
+<ul>
+<li>类型卸载<ul>
+<li>必须所有实例已被回收</li>
+<li>必须类加载器已被回收</li>
+<li>必须类对应的class对象不存在引用</li>
+</ul>
+</li>
+<li>常量池中废弃的常量<ul>
+<li>不存在引用就可以卸载</li>
+</ul>
+</li>
 </ul>
 <br>
 
-<h3 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h3><ul>
-<li>是方法区的一部分</li>
-<li>用于*<strong>*存放编译器生成的各种符号引用**</strong></li>
+<br>
+
+<h1 id="线程私有"><a href="#线程私有" class="headerlink" title="线程私有"></a>线程私有</h1><h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>用来存储指向下一条指令的地址，由执行引擎读取下一条指令执行</p>
+<ul>
+<li>程序计数器存在的意义？cpu在不停的切换线程执行，因此需要记录下一条可以执行的指令</li>
+<li>为什么是线程私有的？如果不是私有会存在一致性问题</li>
 </ul>
 <br>
 
-<h3 id="元数据区"><a href="#元数据区" class="headerlink" title="元数据区"></a>元数据区</h3><ul>
-<li>JDK8开始使用元空间（Metaspace），方法区存在于元空间</li>
-<li>元空间不再与堆连续，而是存在于本地内存</li>
-<li>本地内存（Native memory），也称为C-Heap，是供JVM自身进程使用的。当Java Heap空间不足时会触发GC，但Native memory空间不够却不会触发GC。</li>
-<li>默认情况下元空间是可以无限使用本地内存的，但是也可以通过参数进行设置</li>
+<h3 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h3><h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ul>
+<li>线程私有</li>
+<li>生命周期与线程一致</li>
+<li>不存在垃圾回收问题</li>
+</ul>
+<h4 id="可能出现的异常"><a href="#可能出现的异常" class="headerlink" title="可能出现的异常"></a>可能出现的异常</h4><p>栈大小可以是固定的也可以是动态的</p>
+<ul>
+<li>Stackoverflowerror:当栈大小是固定的时候，有可能出现此问题</li>
+<li>Outofmemoryerror:当栈大小是动态的时候，请求增加栈空间有可能报此问题</li>
+</ul>
+<p>可以通过-Xss设置栈大小，如-Xss1m</p>
+<h4 id="栈的存储结构"><a href="#栈的存储结构" class="headerlink" title="栈的存储结构"></a>栈的存储结构</h4><p>栈的基本单位就是栈贞，java方法的执行就是栈贞入栈到出栈的过程，栈贞的具体结构如下</p>
+<ul>
+<li>局部变量表</li>
+<li>操作数栈</li>
+<li>动态链接</li>
+<li>方法返回地址</li>
+<li>一些附加信息</li>
+</ul>
+<h4 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h4><ul>
+<li>局部变量表在编译期就确定下来</li>
+<li>定义为一个数字数组</li>
+<li>存放方法参数、方法中的局部变量，例如基本数据类型、对象饮用、returnaddress类型等</li>
+<li>基本存储单位是slot（槽）</li>
+<li>32位以内类型占一个slot，如byte\short\char\int\boolen</li>
+<li>64位占两个slot，如long\double</li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#### 变量的分类</span><br><span class="line">- 按数据类型</span><br><span class="line">  - 基本数据类型</span><br><span class="line">  - 引用数据类型</span><br><span class="line">- 按在类中声明的位置</span><br><span class="line">  - 成员变量：在使用前都经历过赋默认值的过程</span><br><span class="line">    - 类变量：链接阶段赋默认值</span><br><span class="line">    - 实例变量：随着对象的创建会在堆内存分配空间并赋默认值</span><br><span class="line">  - 局部变量：在使用前必须显式赋值，否则编译不通过</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="操作数栈"><a href="#操作数栈" class="headerlink" title="操作数栈"></a>操作数栈</h4><ul>
+<li>结构：数组/链表，先入后出</li>
+<li>作用：在方法执行的过程中，根据字节码指令，往操作数栈中写入或读区指令。简单来说就是存放操作数、运算中间数据的容器</li>
+<li>特点：长度在编译时确定</li>
+<li>使用过程：例如1+2的操作，1和2分别压入操作数栈，通过add指令进行求和，结果根据istore_1指令存放入局部变量表的index为1的位置。</li>
+</ul>
+<h4 id="贞数据区"><a href="#贞数据区" class="headerlink" title="贞数据区"></a>贞数据区</h4><ol>
+<li><p>动态链接：栈贞中存储的一个内存地址，这个地址指向方法区中运行常量池记录的方法引用，即指向具体的方法。</p>
+<ol>
+<li>每一个栈贞都记录本栈贞对应的运行常量池方法引用（动态链接）</li>
+<li>栈贞中调用了其它方法时也会记录指向被调用方法的运行常量池方法引用（动态链接）</li>
+</ol>
+</li>
+<li><p>方法返回地址</p>
+<ol>
+<li><p>保存调用该方法的pc寄存器的值</p>
+</li>
+<li><p>目的：为了指向方法执行结束后的下一条指令，即返回到该方法被调用的位置</p>
+</li>
+<li><p>方法的退出方式</p>
+<ol>
+<li>正常退出：返回该方法被调用的位置</li>
+<li>异常退出：通过异常表来确定返回地址</li>
+</ol>
+</li>
+<li><p>返回命令</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ireturn：返回值是boolen、byte、char、short、int</span><br><span class="line">Lreturn：long类型</span><br><span class="line">freturn：float类型</span><br><span class="line">dreturn：double类型</span><br><span class="line">areturn：引用类型</span><br><span class="line">return：void</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+</li>
+</ol>
+<ol start="3">
+<li>一些附加信息：例如对程序调试提供支持的信息等，具体要看虚拟机的实现，不一定都有。</li>
+</ol>
+<h4 id="常见问题-1"><a href="#常见问题-1" class="headerlink" title="常见问题"></a>常见问题</h4><ul>
+<li>方法中定义的局部变量是不是线程安全的？具体问题具体分析<ul>
+<li>如果涉及到将局部变量返回则有可能不安全</li>
+<li>如果是参数传递进来的有可能不安全</li>
+</ul>
+</li>
 </ul>
 <br>
 
-<h1 id="线程私有"><a href="#线程私有" class="headerlink" title="线程私有"></a>线程私有</h1><ul>
-<li>程序计数器：记录当前线程所执行的字节码的行号</li>
-<li>本地方法栈： 为Native方法服务(栈的空间大小远远小于堆)</li>
-<li>虚拟机栈：描述的是**<em>java方法执行的内存模型**</em></li>
+<h3 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h3><ul>
+<li>本地方法：一个java方法，但是实现不是由java实现而是其它语言，如c/c++</li>
+<li>为什么使用本地方法？与java环境外交互、与操作系统交互</li>
+<li>本地方法栈：管理本地方法的调用，其他与虚拟机栈相同</li>
 </ul>
-<br>
-
-<h3 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h3><ul>
-<li>每个方法被执行的时候都会创建一个”栈帧”</li>
-<li>每个方法被调用到执行完的过程，就对应着一个栈帧在虚拟机栈中从入栈到出栈的过程</li>
-<li>栈帧生命周期与线程相同，是线程私有的</li>
-</ul>
-<br>
-
-<h3 id="栈帧组成"><a href="#栈帧组成" class="headerlink" title="栈帧组成"></a>栈帧组成</h3><ul>
-<li>局部变量区：以一个字长为单位、从0开始计数的数组。用于存储局部变量表，通过索引来访问</li>
-<li>操作数栈：以一个字长为单位、从0开始计数的数组。通过入栈和出栈来访问</li>
-<li>帧数据区：存储数据用来支持常量池解析、正常方法返回以及异常派发机制</li>
-</ul>
-<br>
-
-<h3 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h3><ul>
-<li>存放了编译器可知的各种基本数据类型、对象引用(引用指针，并非对象本身)</li>
-<li>局部变量表所需的内存空间在编译期间完成分配</li>
-<li>在运行期间*<strong><em>栈帧</em></strong>*不会改变局部变量表的大小空间</li>
-</ul>
-<br>
-
-<h1 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h1><p>JVM控制内存之外的本机内存。 </p>
-<p>jdk的NIO引入了通道与缓冲区的IO方式，它可以调用Native方法直接分配堆外内存</p>
 <br>
 
 <br>
@@ -415,7 +617,7 @@ var _hmt = _hmt || [];
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        183
+                        193
                     </p>
                 </div>
             </div>
@@ -425,7 +627,7 @@ var _hmt = _hmt || [];
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        26
+                        28
                     </p>
                 </div>
             </div>
@@ -435,7 +637,7 @@ var _hmt = _hmt || [];
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        48
+                        49
                     </p>
                 </div>
             </div>
@@ -527,6 +729,14 @@ var _hmt = _hmt || [];
                 <span class="level-item tag">8</span>
             </span>
         </a></li><li>
+        <a class="level is-marginless" href="/categories/container/">
+            <span class="level-start">
+                <span class="level-item">container</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
         <a class="level is-marginless" href="/categories/experienceShare/">
             <span class="level-start">
                 <span class="level-item">experienceShare</span>
@@ -556,7 +766,15 @@ var _hmt = _hmt || [];
                 <span class="level-item">java基础</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">58</span>
+                <span class="level-item tag">54</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/jvm/">
+            <span class="level-start">
+                <span class="level-item">jvm</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/mq/">
@@ -612,7 +830,7 @@ var _hmt = _hmt || [];
                 <span class="level-item">所感</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">10</span>
+                <span class="level-item tag">11</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">
@@ -700,7 +918,7 @@ var _hmt = _hmt || [];
                 <span class="level-item">软件技术</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">12</span>
+                <span class="level-item tag">13</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/">
@@ -722,7 +940,7 @@ var _hmt = _hmt || [];
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/BASE%E7%90%86%E8%AE%BA/" style="font-size: 10px;">BASE理论</a> <a href="/tags/CAP%E7%90%86%E8%AE%BA/" style="font-size: 10px;">CAP理论</a> <a href="/tags/RPA/" style="font-size: 16.36px;">RPA</a> <a href="/tags/RPA%E7%BB%84%E4%BB%B6%E5%BA%93/" style="font-size: 10px;">RPA组件库</a> <a href="/tags/Saga/" style="font-size: 10px;">Saga</a> <a href="/tags/Spring/" style="font-size: 13.64px;">Spring</a> <a href="/tags/UiPath/" style="font-size: 14.55px;">UiPath</a> <a href="/tags/XA%E8%A7%84%E8%8C%83/" style="font-size: 10px;">XA规范</a> <a href="/tags/activiti/" style="font-size: 16.36px;">activiti</a> <a href="/tags/annotation%E6%B3%A8%E8%A7%A3/" style="font-size: 13.64px;">annotation注解</a> <a href="/tags/apollo/" style="font-size: 10px;">apollo</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/experienceShare/" style="font-size: 10px;">experienceShare</a> <a href="/tags/feign/" style="font-size: 10px;">feign</a> <a href="/tags/git/" style="font-size: 13.64px;">git</a> <a href="/tags/github/" style="font-size: 11.82px;">github</a> <a href="/tags/hexo/" style="font-size: 18.18px;">hexo</a> <a href="/tags/janusGraph/" style="font-size: 11.82px;">janusGraph</a> <a href="/tags/java%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">java语法基础</a> <a href="/tags/java%E9%9B%86%E5%90%88/" style="font-size: 19.09px;">java集合</a> <a href="/tags/jvm/" style="font-size: 12.73px;">jvm</a> <a href="/tags/key/" style="font-size: 10px;">key</a> <a href="/tags/mq/" style="font-size: 13.64px;">mq</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/php%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">php基础</a> <a href="/tags/php%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">php语言</a> <a href="/tags/rabbitmq/" style="font-size: 13.64px;">rabbitmq</a> <a href="/tags/ribbon/" style="font-size: 10px;">ribbon</a> <a href="/tags/springboot/" style="font-size: 10.91px;">springboot</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 14.55px;">事务</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 14.55px;">分布式</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 11.82px;">分布式一致性</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 14.55px;">多线程</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/" style="font-size: 12.73px;">并发容器</a> <a href="/tags/%E6%88%90%E9%95%BF/" style="font-size: 10px;">成长</a> <a href="/tags/%E6%89%80%E6%84%9F/" style="font-size: 18.18px;">所感</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 14.55px;">数据一致性</a> <a href="/tags/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/" style="font-size: 10px;">标准与规范</a> <a href="/tags/%E7%90%86%E8%B4%A2/" style="font-size: 10.91px;">理财</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.45px;">算法</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/" style="font-size: 10px;">系统装机</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" style="font-size: 11.82px;">网络协议</a> <a href="/tags/%E8%81%8C%E4%B8%9A%E5%8F%91%E5%B1%95/" style="font-size: 18.18px;">职业发展</a> <a href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/" style="font-size: 17.27px;">读后感</a> <a href="/tags/%E9%94%81/" style="font-size: 16.36px;">锁</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 20px;">面试</a>
+        <a href="/tags/BASE%E7%90%86%E8%AE%BA/" style="font-size: 10px;">BASE理论</a> <a href="/tags/CAP%E7%90%86%E8%AE%BA/" style="font-size: 10px;">CAP理论</a> <a href="/tags/RPA/" style="font-size: 16.36px;">RPA</a> <a href="/tags/RPA%E7%BB%84%E4%BB%B6%E5%BA%93/" style="font-size: 10px;">RPA组件库</a> <a href="/tags/Saga/" style="font-size: 10px;">Saga</a> <a href="/tags/Spring/" style="font-size: 13.64px;">Spring</a> <a href="/tags/UiPath/" style="font-size: 14.55px;">UiPath</a> <a href="/tags/XA%E8%A7%84%E8%8C%83/" style="font-size: 10px;">XA规范</a> <a href="/tags/activiti/" style="font-size: 16.36px;">activiti</a> <a href="/tags/annotation%E6%B3%A8%E8%A7%A3/" style="font-size: 13.64px;">annotation注解</a> <a href="/tags/apollo/" style="font-size: 10px;">apollo</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/eureka/" style="font-size: 10px;">eureka</a> <a href="/tags/experienceShare/" style="font-size: 10px;">experienceShare</a> <a href="/tags/feign/" style="font-size: 10px;">feign</a> <a href="/tags/git/" style="font-size: 13.64px;">git</a> <a href="/tags/github/" style="font-size: 11.82px;">github</a> <a href="/tags/hexo/" style="font-size: 18.18px;">hexo</a> <a href="/tags/janusGraph/" style="font-size: 11.82px;">janusGraph</a> <a href="/tags/java%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">java语法基础</a> <a href="/tags/java%E9%9B%86%E5%90%88/" style="font-size: 19.09px;">java集合</a> <a href="/tags/jvm/" style="font-size: 18.18px;">jvm</a> <a href="/tags/key/" style="font-size: 10px;">key</a> <a href="/tags/mq/" style="font-size: 13.64px;">mq</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/php%E5%9F%BA%E7%A1%80/" style="font-size: 10px;">php基础</a> <a href="/tags/php%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">php语言</a> <a href="/tags/rabbitmq/" style="font-size: 13.64px;">rabbitmq</a> <a href="/tags/ribbon/" style="font-size: 10px;">ribbon</a> <a href="/tags/springboot/" style="font-size: 10.91px;">springboot</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 14.55px;">事务</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 14.55px;">分布式</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 11.82px;">分布式一致性</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 14.55px;">多线程</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8/" style="font-size: 12.73px;">并发容器</a> <a href="/tags/%E6%88%90%E9%95%BF/" style="font-size: 10px;">成长</a> <a href="/tags/%E6%89%80%E6%84%9F/" style="font-size: 19.09px;">所感</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" style="font-size: 14.55px;">数据一致性</a> <a href="/tags/%E6%A0%87%E5%87%86%E4%B8%8E%E8%A7%84%E8%8C%83/" style="font-size: 10px;">标准与规范</a> <a href="/tags/%E7%90%86%E8%B4%A2/" style="font-size: 10.91px;">理财</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15.45px;">算法</a> <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%A3%85%E6%9C%BA/" style="font-size: 10px;">系统装机</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/" style="font-size: 11.82px;">网络协议</a> <a href="/tags/%E8%81%8C%E4%B8%9A%E5%8F%91%E5%B1%95/" style="font-size: 18.18px;">职业发展</a> <a href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/" style="font-size: 17.27px;">读后感</a> <a href="/tags/%E9%94%81/" style="font-size: 16.36px;">锁</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 20px;">面试</a>
     </div>
 </div>
 
@@ -739,18 +957,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/rhinitis/" class="media-left">
+            <a href="/2024/6/13/docker_command/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="鼻炎预防治疗">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="docker常用命令">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:34:33.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/rhinitis/" class="has-link-black-ter is-size-6">鼻炎预防治疗</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2024-06-13T07:30:06.000Z">2024-06-13</time></div>
+                    <a href="/2024/6/13/docker_command/" class="has-link-black-ter is-size-6">docker常用命令</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a>
+                        <a class="has-link-grey -link" href="/categories/container/">container</a>
                     </p>
                 </div>
             </div>
@@ -758,18 +976,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/grow_feel/" class="media-left">
+            <a href="/2023/12/28/stringTable/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="成长">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="字符串常量池">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:21:53.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/grow_feel/" class="has-link-black-ter is-size-6">成长</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-27T16:06:57.000Z">2023-12-28</time></div>
+                    <a href="/2023/12/28/stringTable/" class="has-link-black-ter is-size-6">字符串常量池</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%89%80%E6%84%9F/">所感</a>
+                        <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                     </p>
                 </div>
             </div>
@@ -777,18 +995,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/work_feel/" class="media-left">
+            <a href="/2023/12/26/exeE/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="工作">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="执行引擎">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:21:41.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/work_feel/" class="has-link-black-ter is-size-6">工作</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-25T16:06:57.000Z">2023-12-26</time></div>
+                    <a href="/2023/12/26/exeE/" class="has-link-black-ter is-size-6">执行引擎</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%89%80%E6%84%9F/">所感</a>
+                        <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                     </p>
                 </div>
             </div>
@@ -796,18 +1014,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/life_feel/" class="media-left">
+            <a href="/2023/12/20/ai-tools/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="生活">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="ai工具调研">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:21:30.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/life_feel/" class="has-link-black-ter is-size-6">生活</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-20T12:26:51.000Z">2023-12-20</time></div>
+                    <a href="/2023/12/20/ai-tools/" class="has-link-black-ter is-size-6">ai工具调研</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%89%80%E6%84%9F/">所感</a>
+                        <a class="has-link-grey -link" href="/categories/%E8%BD%AF%E4%BB%B6%E6%8A%80%E6%9C%AF/">软件技术</a>
                     </p>
                 </div>
             </div>
@@ -815,18 +1033,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/kaogong/" class="media-left">
+            <a href="/2023/12/9/jvm-base/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="考公相关资料">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="jvm基础知识">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:12:31.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/kaogong/" class="has-link-black-ter is-size-6">考公相关资料</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-09T15:26:04.000Z">2023-12-09</time></div>
+                    <a href="/2023/12/9/jvm-base/" class="has-link-black-ter is-size-6">jvm基础知识</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%88%90%E9%95%BF/">成长</a>
+                        <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                     </p>
                 </div>
             </div>
@@ -845,12 +1063,45 @@ var _hmt = _hmt || [];
         <ul class="menu-list">
         
         <li>
+            <a class="level is-marginless" href="/archives/2024/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2024</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2023/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2023</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2023/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2023</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
             <a class="level is-marginless" href="/archives/2023/07/">
                 <span class="level-start">
                     <span class="level-item">七月 2023</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">5</span>
+                    <span class="level-item tag">6</span>
                 </span>
             </a>
         </li>
@@ -1294,6 +1545,13 @@ var _hmt = _hmt || [];
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/docker/">
+                        <span class="tag">docker</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/eureka/">
                         <span class="tag">eureka</span>
                         <span class="tag is-grey">1</span>
@@ -1359,7 +1617,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/jvm/">
                         <span class="tag">jvm</span>
-                        <span class="tag is-grey">4</span>
+                        <span class="tag is-grey">10</span>
                     </a>
                 </div>
                 
@@ -1471,7 +1729,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E6%89%80%E6%84%9F/">
                         <span class="tag">所感</span>
-                        <span class="tag is-grey">10</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 
@@ -1541,7 +1799,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">84</span>
+                        <span class="tag is-grey">91</span>
                     </a>
                 </div>
                 
@@ -1570,18 +1828,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/rhinitis/" class="media-left">
+            <a href="/2024/6/13/docker_command/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="鼻炎预防治疗">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="docker常用命令">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:34:33.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/rhinitis/" class="has-link-black-ter is-size-6">鼻炎预防治疗</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2024-06-13T07:30:06.000Z">2024-06-13</time></div>
+                    <a href="/2024/6/13/docker_command/" class="has-link-black-ter is-size-6">docker常用命令</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a>
+                        <a class="has-link-grey -link" href="/categories/container/">container</a>
                     </p>
                 </div>
             </div>
@@ -1589,18 +1847,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/grow_feel/" class="media-left">
+            <a href="/2023/12/28/stringTable/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="成长">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="字符串常量池">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:21:53.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/grow_feel/" class="has-link-black-ter is-size-6">成长</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-27T16:06:57.000Z">2023-12-28</time></div>
+                    <a href="/2023/12/28/stringTable/" class="has-link-black-ter is-size-6">字符串常量池</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%89%80%E6%84%9F/">所感</a>
+                        <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                     </p>
                 </div>
             </div>
@@ -1608,18 +1866,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/work_feel/" class="media-left">
+            <a href="/2023/12/26/exeE/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="工作">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="执行引擎">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:21:41.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/work_feel/" class="has-link-black-ter is-size-6">工作</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-25T16:06:57.000Z">2023-12-26</time></div>
+                    <a href="/2023/12/26/exeE/" class="has-link-black-ter is-size-6">执行引擎</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%89%80%E6%84%9F/">所感</a>
+                        <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                     </p>
                 </div>
             </div>
@@ -1627,18 +1885,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/life_feel/" class="media-left">
+            <a href="/2023/12/20/ai-tools/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="生活">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="ai工具调研">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:21:30.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/life_feel/" class="has-link-black-ter is-size-6">生活</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-20T12:26:51.000Z">2023-12-20</time></div>
+                    <a href="/2023/12/20/ai-tools/" class="has-link-black-ter is-size-6">ai工具调研</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%89%80%E6%84%9F/">所感</a>
+                        <a class="has-link-grey -link" href="/categories/%E8%BD%AF%E4%BB%B6%E6%8A%80%E6%9C%AF/">软件技术</a>
                     </p>
                 </div>
             </div>
@@ -1646,18 +1904,18 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
-            <a href="/2023/7/12/kaogong/" class="media-left">
+            <a href="/2023/12/9/jvm-base/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="考公相关资料">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="jvm基础知识">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-07-12T13:12:31.000Z">2023-07-12</time></div>
-                    <a href="/2023/7/12/kaogong/" class="has-link-black-ter is-size-6">考公相关资料</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2023-12-09T15:26:04.000Z">2023-12-09</time></div>
+                    <a href="/2023/12/9/jvm-base/" class="has-link-black-ter is-size-6">jvm基础知识</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/%E6%88%90%E9%95%BF/">成长</a>
+                        <a class="has-link-grey -link" href="/categories/jvm/">jvm</a>
                     </p>
                 </div>
             </div>
@@ -1676,12 +1934,45 @@ var _hmt = _hmt || [];
         <ul class="menu-list">
         
         <li>
+            <a class="level is-marginless" href="/archives/2024/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2024</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2023/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2023</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2023/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2023</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
             <a class="level is-marginless" href="/archives/2023/07/">
                 <span class="level-start">
                     <span class="level-item">七月 2023</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">5</span>
+                    <span class="level-item tag">6</span>
                 </span>
             </a>
         </li>
@@ -2125,6 +2416,13 @@ var _hmt = _hmt || [];
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/docker/">
+                        <span class="tag">docker</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/eureka/">
                         <span class="tag">eureka</span>
                         <span class="tag is-grey">1</span>
@@ -2190,7 +2488,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/jvm/">
                         <span class="tag">jvm</span>
-                        <span class="tag is-grey">4</span>
+                        <span class="tag is-grey">10</span>
                     </a>
                 </div>
                 
@@ -2302,7 +2600,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E6%89%80%E6%84%9F/">
                         <span class="tag">所感</span>
-                        <span class="tag is-grey">10</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 
@@ -2372,7 +2670,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/">
                         <span class="tag">面试</span>
-                        <span class="tag is-grey">84</span>
+                        <span class="tag is-grey">91</span>
                     </a>
                 </div>
                 
@@ -2397,7 +2695,7 @@ var _hmt = _hmt || [];
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2023 monkeyGeek&nbsp;
+                &copy; 2024 monkeyGeek&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
                         href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
